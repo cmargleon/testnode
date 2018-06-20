@@ -16,6 +16,28 @@ let businessNetworkConnection;
 
 let businessNetworkName = 'degree';
 let factory;
+
+async function importCardForIdentity(cardName, identity) {
+
+  //use admin connection
+  adminConnection = new AdminConnection();
+  businessNetworkName = 'degree';
+
+  //declare metadata
+  const metadata = {
+      userName: identity.userID,
+      version: 1,
+      enrollmentSecret: identity.userSecret,
+      businessNetwork: businessNetworkName
+  };
+
+  //get connectionProfile from json, create Idcard
+  const connectionProfile = require('./local_connection.json');
+  const card = new IdCard(metadata, connectionProfile);
+
+  //import card
+  await adminConnection.importCard(cardName, card);
+}
 //export module
 module.exports = {
 
