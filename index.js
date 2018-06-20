@@ -9,7 +9,7 @@ const path = require('path');
 const app = express();
 const router = express.Router();
 
-var network = require('./network/network.js');
+var network = require('./network.js');
 
 //bootstrap app
 app.use(bodyParser.urlencoded({ extended: true}))
