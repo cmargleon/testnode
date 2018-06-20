@@ -18,6 +18,10 @@ var network = require('./network.js');
 app.use(bodyParser.urlencoded({ extended: true}))
 app.use(bodyParser.json());
 
+app.get('/test', function(req, res) {
+    res.sendStatus(200);
+})
+
 //post call to register graduate on the network
 app.post('/api/registerGraduate', function(req, res) {
     console.log("Creando cuenta graduado");
