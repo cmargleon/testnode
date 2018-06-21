@@ -62,9 +62,7 @@ app.post('/api/registerUniversity', function(req, res) {
     validate.validateUniversityRegistration(universityRut, cardId, shortName, fullName, email)
         .then((response) => {
             if (response.error != null) {
-                res.json({
-                  error: response.error + "aaaa"
-                });
+                res.sendStatus(404);
                 return;
               } else {
                       //else register university on the network
@@ -72,7 +70,7 @@ app.post('/api/registerUniversity', function(req, res) {
                 .then((response) => {
                     //return error if error in response
                     if (response.error != null) {
-                    res.send(response.error);
+                    res.sendStatus(403);
                     } else {
                     //else return success
                     res.json({
