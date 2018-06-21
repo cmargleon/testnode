@@ -3,7 +3,7 @@
 //get libraries
 const express = require('express');
 const bodyParser = require('body-parser');
-//const request = require('request');
+const request = require('request');
 const path = require('path');
 
 //create express web-app
@@ -32,34 +32,20 @@ app.post('/api/registerGraduate', function(req, res) {
     var email = req.body.email;
     var phoneNumber = req.body.phonenumber;
 
-    console.log(req.body);
-
-    validate.validateGraduateRegistration(graduateRut, cardId, firstName, lastName, phoneNumber, email)
-        .then((response) => {
-            if (response.error != null) {
-                res.json({
-                  error: response.error
+    network.registerGraduate(cardId, graduateRut, firstName, lastName, email, phoneNumber)
+      .then((response) => {
+       //return error if error in response
+        if (response.error != null) {
+            res.json({
+            error: response.error
+            });
+          } else {
+          //else return success
+          res.json({
+          success: response
                 });
-                return;
-              } else {
-                    //else register graduate on the network
-                network.registerGraduate(cardId, graduateRut, firstName, lastName, email, phoneNumber)
-                .then((response) => {
-                    //return error if error in response
-                    if (response.error != null) {
-                    res.json({
-                        error: response.error
-                    });
-                    } else {
-                    //else return success
-                    res.json({
-                        success: response
-                    });
-                    }
-                });
-              }
-        })
-        
+            }
+      });    
 });
 
 //post call to register university on the network
