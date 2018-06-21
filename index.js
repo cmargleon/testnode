@@ -63,7 +63,7 @@ app.post('/api/registerUniversity', function(req, res) {
         .then((response) => {
             if (response.error != null) {
                 res.json({
-                  error: response.error
+                  error: response.error + "aaaa"
                 });
                 return;
               } else {
