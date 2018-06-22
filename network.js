@@ -38,7 +38,7 @@ async function importCardForIdentity(cardName, identity) {
   };
 
   //get connectionProfile from json, create Idcard
-  const connectionProfile = require('./connection.json');
+  const connectionProfile = require('./home/claudiomatiasrg/degree/connection.json');
   const card = new IdCard(metadata, connectionProfile);
 
   //import card
