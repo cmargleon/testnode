@@ -38,18 +38,66 @@ async function importCardForIdentity(cardName, identity) {
   };
 
   //get connectionProfile from json, create Idcard
-  let connectionProfile =  { name: 'hlfv1',
-                          "x-type": "hlfv1",
-                          type: 'hlfv1',
-                          version: "1.0.0",
-                          orderers: [ { url: 'grpc://localhost:7050' } ],
-                          ca: { url: 'http://localhost:7054', name: 'ca.org1.example.com' },
-                          peers: 
-                           [ { requestURL: 'grpc://localhost:7051',
-                               eventURL: 'grpc://localhost:7053' } ],
-                          channel: 'composerchannel',
-                          mspID: 'Org1MSP',
-                          timeout: 300 };
+  let connectionProfile =  {
+    "name": "fabric-network",
+    "x-type": "hlfv1",
+    "version": "1.0.0",
+    "peers": {
+        "peer0.org1.example.com": {
+            "url": "grpc://localhost:7051",
+            "eventUrl": "grpc://localhost:7053"
+        }
+    },
+    "certificateAuthorities": {
+        "ca.org1.example.com": {
+            "url": "http://localhost:7054",
+            "caName": "ca.org1.example.com"
+        }
+    },
+    "orderers": {
+        "orderer.example.com": {
+            "url": "grpc://localhost:7050"
+        }
+    },
+    "organizations": {
+        "Org1": {
+            "mspid": "Org1MSP",
+            "peers": [
+                "peer0.org1.example.com"
+            ],
+            "certificateAuthorities": [
+                "ca.org1.example.com"
+            ]
+        }
+    },
+    "channels": {
+        "composerchannel": {
+            "orderers": [
+                "orderer.example.com"
+            ],
+            "peers": {
+                "peer0.org1.example.com": {
+                    "endorsingPeer": true,
+                    "chaincodeQuery": true,
+                    "eventSource": true
+                }
+            }
+        }
+    },
+    "client": {
+        "organization": "Org1",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300",
+                    "eventHub": "300",
+                    "eventReg": "300"
+                },
+                "orderer": "300"
+            }
+        }
+    }
+};
   const card = new IdCard(metadata, connectionProfile);
 
   //import card
