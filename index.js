@@ -185,7 +185,7 @@ app.post('/api/loginuniversity', function(req,res) {
         returnData.fullName = university.fullName;
         returnData.email = university.email;
         //returnData.points = member.points; REVISAR ESTO!!!!!!
-        console.log(returnData)
+        res.sendStatus(200);
       }
 
     })
