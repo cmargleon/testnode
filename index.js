@@ -68,16 +68,18 @@ app.post('/api/registerUniversity', function(req, res) {
                       //else register university on the network
                 network.registerUniversity(cardId, universityRut, shortName, fullName, email)
                 .then((response) => {
-                    //return error if error in response
-                    if (response.error != null) {
-                    res.sendStatus(403);
-                    } else {
-                    //else return success
-                    res.json({
-                        success: response
-                    });
-                    }
-                });
+                  //return error if error in response
+                  if (response.error != null) {
+                  res.json({
+                      error: response.error
+                  });
+                  } else {
+                  //else return success
+                  res.json({
+                      success: response
+                  });
+                  }
+              });
               }
         })
 });
