@@ -140,7 +140,7 @@ app.post('/api/logingraduate', function(req,res) {
       if (graduate.error != null) {
           console.log("ERROR!!!")
         res.json({
-          error: graduate.error
+          "errorw": graduate.error
         });
       } else {
         //else add graduate data to return object
