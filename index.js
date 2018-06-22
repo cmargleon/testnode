@@ -151,6 +151,7 @@ app.post('/api/logingraduate', function(req,res) {
         returnData.email = graduate.email;
         //returnData.points = member.points; REVISAR ESTO!!!!!!
         console.log(returnData)
+        res.sendStatus(200);
       }
 
     })
