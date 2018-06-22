@@ -267,6 +267,7 @@ module.exports = {
     
 
     //return university object
+    res.sendStatus(200);
     return university;
   }
   catch(err) {
