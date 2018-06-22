@@ -41,6 +41,7 @@ async function importCardForIdentity(cardName, identity) {
   let connectionProfile =  { name: 'hlfv1',
                           "x-type": "hlfv1",
                           type: 'hlfv1',
+                          version: "1.0.0",
                           orderers: [ { url: 'grpc://localhost:7050' } ],
                           ca: { url: 'http://localhost:7054', name: 'ca.org1.example.com' },
                           peers: 
