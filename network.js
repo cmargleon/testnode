@@ -38,7 +38,17 @@ async function importCardForIdentity(cardName, identity) {
   };
 
   //get connectionProfile from json, create Idcard
-  const connectionProfile = require('./home/claudiomatiasrg/degree/connection.json');
+  let connectionProfile =  { name: 'hlfv1',
+                          "x-type": "hlfv1",
+                          type: 'hlfv1',
+                          orderers: [ { url: 'grpc://localhost:7050' } ],
+                          ca: { url: 'http://localhost:7054', name: 'ca.org1.example.com' },
+                          peers: 
+                           [ { requestURL: 'grpc://localhost:7051',
+                               eventURL: 'grpc://localhost:7053' } ],
+                          channel: 'composerchannel',
+                          mspID: 'Org1MSP',
+                          timeout: 300 };
   const card = new IdCard(metadata, connectionProfile);
 
   //import card
