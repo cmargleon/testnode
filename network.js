@@ -413,7 +413,7 @@ module.exports = {
     console.log("aqui")
 
 
-    return degree;
+    return true;
   }
   catch(err) {
     //print and return error
