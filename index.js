@@ -150,8 +150,9 @@ app.post('/api/logingraduate', function(req,res) {
         returnData.phoneNumber = graduate.phoneNumber;
         returnData.email = graduate.email;
         //returnData.points = member.points; REVISAR ESTO!!!!!!
-        console.log(returnData)
-        res.sendStatus(200);
+        res.json({
+          success: returnData
+      });
       }
 
     })
@@ -185,8 +186,9 @@ app.post('/api/loginuniversity', function(req,res) {
         returnData.shortName = university.shortName;
         returnData.fullName = university.fullName;
         returnData.email = university.email;
-        //returnData.points = member.points; REVISAR ESTO!!!!!!
-        res.sendStatus(200);
+        res.json({
+          success: returnData
+      });
       }
 
     })
