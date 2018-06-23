@@ -412,8 +412,6 @@ module.exports = {
     return degreesRegistry.addAll([degree2])
     console.log("aqui")
 
-
-    degree;
   }
   catch(err) {
     //print and return error
