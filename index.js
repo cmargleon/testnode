@@ -261,7 +261,7 @@ app.post('/api/createregistry', function(req, res) {
     } else {
       
       //returnData.points = member.points; REVISAR ESTO!!!!!!
-      console.log(`returndata: ${returnData}`);
+      //console.log(`returndata: ${returnData}`);
       res.json({
         success: degree
     });
