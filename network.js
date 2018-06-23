@@ -409,11 +409,11 @@ module.exports = {
     degree2.gradYear = gradYear;
     degree2.gpa = gpa;
     console.log(degree2)
-    const degree = await degreesRegistry.addAll([degree2])
+    return degreesRegistry.addAll([degree2])
     console.log("aqui")
 
 
-    return degree;
+    degree;
   }
   catch(err) {
     //print and return error
