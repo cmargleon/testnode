@@ -251,6 +251,23 @@ app.post('/api/createregistry', function(req, res) {
   cardId = req.body.cardid
 
   network.createRegistry(cardId, req.body.degreeid, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa)
+  .then((degree) => {
+    //return error if error in response
+    if (degree.error != null) {
+        console.log("ERROR!!!")
+      res.json({
+        error: degree.error
+      });
+    } else {
+      
+      //returnData.points = member.points; REVISAR ESTO!!!!!!
+      console.log(`returndata: ${returnData}`);
+      res.json({
+        success: degree
+    });
+    }
+
+  })
 })
 
 app.post('/api/authorizedegree', function(req, res){
