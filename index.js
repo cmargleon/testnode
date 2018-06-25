@@ -311,7 +311,7 @@ app.post('/api/queryfullregistry', function(req, res){
 app.post('/api/createuserandregistry', function(req, res){
   var degreeId = uuidv1();
   var graduateRut = req.body.graduaterut;
-  var owner = req.body.owner;
+  var owner = req.body.graduaterut;
   var degreeType = req.body.degreetype;
   var degreeStatus = req.body.degreestatus;
   var major = req.body.major;
@@ -324,9 +324,27 @@ app.post('/api/createuserandregistry', function(req, res){
   var lastName = req.body.lastname;
   var email = req.body.email;
   var phoneNumber = req.body.phonenumber;
-  console.log(degreeId)
+  var cardIdUni = req.body.cardiduni;
+  console.log(cardId)
 
-  network.createUserAndRegistry(cardId, graduateRut, firstName, lastName, email, phoneNumber, degreeId, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa);
+  network.createUserAndRegistry(cardId, graduateRut, firstName, lastName, email, phoneNumber, degreeId, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, cardIdUni)
+  .then((result) => {
+    //return error if error in response
+    if (result.error != null) {
+        console.log("ERROR!!!")
+      res.json({
+        error: result.error
+      });
+    } else {
+      
+      //returnData.points = member.points; REVISAR ESTO!!!!!!
+      //console.log(`returndata: ${returnData}`);
+      res.json({
+        success: result
+    });
+    }
+
+  })
 })
 
 //declare port

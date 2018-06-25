@@ -17,6 +17,29 @@ let businessNetworkConnection;
 let businessNetworkName = 'degree';
 let factory;
 
+async function checkIfUserExists(graduateRut) {
+  //adminConnection = new AdminConnection();
+  //businessNetworkName = 'degree';
+  console.log("hola")
+
+  businessNetworkConnection = new BusinessNetworkConnection();
+    await businessNetworkConnection.connect('admin@degree');
+console.log("dsaad")
+    //get the factory for the business network
+    factory = businessNetworkConnection.getBusinessNetwork().getFactory();
+console.log("dsada")
+    
+    
+    console.log("Hola")
+    //add graduate participant
+    const participantRegistry = await businessNetworkConnection.getParticipantRegistry(namespace + '.Graduate');
+    console.log("dsds")
+    const check = await participantRegistry.exists(graduateRut);
+    console.log("dsds");
+    console.log(check);
+    return check;
+}
+
 
 /*
  * Import card for an identity
@@ -392,7 +415,7 @@ module.exports = {
     var rutString = graduateRut.toString();
 
     //const degreeRegistry = await businessNetworkConnection.getAssetRegistry(namespace + '.Degree');
-    const owner = factory.newResource(namespace, 'Graduate', rutString);
+    //const owner = factory.newResource(namespace, 'Graduate', rutString);
 
     let degree2 = factory.newResource(namespace, 'Degree', degreeId);
     
@@ -549,11 +572,34 @@ module.exports = {
 //FUNCIÓN PARA CREAR USUARIO Y REGISTRO DE TITULO AL MISMO TIEMPO
 //SOLO PARA SER UTILIZADO POR UNIVERSIDADES
 
-createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName, email, phoneNumber, degreeId, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa) {
+createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName, email, phoneNumber, degreeId, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, cardIdUni) {
   try {
+    
+    
+    //Check if user exist
+    let check = await checkIfUserExists(graduateRut);
+
+    if (check != true) {
+    //if user does not exist
+    //add graduate participant
+    await this.registerGraduate(cardId, graduateRut,firstName, lastName, email, phoneNumber);
+
+    //create registry
+    await this.createRegistry(cardIdUni, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa);
+    console.log("Usuario y registro creado")
+    return true;
+
+    } else {
+
+    await this.createRegistry(cardIdUni, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa);
+    console.log("Usuario ya existe. Sólo se crea registro")
+    return true;
+    }
     
   }
   catch(error) {
+    //print and return error
+    console.log(err);
     var error = {};
     error.error = err.message;
     return error
