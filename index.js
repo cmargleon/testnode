@@ -325,18 +325,18 @@ app.post('/api/createuserandregistry', function(req, res){
   var email = req.body.email;
   var phoneNumber = req.body.phonenumber;
   var cardIdUni = req.body.cardiduni;
-  console.log(cardId)
+  console.log("Antes de llamar a la función createUserAndRegistry en network")
 
   network.createUserAndRegistry(cardId, graduateRut, firstName, lastName, email, phoneNumber, degreeId, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, cardIdUni)
   .then((result) => {
     //return error if error in response
     if (result.error != null) {
-        console.log("ERROR!!!")
+        console.log("ERROR AL FINALS!!!")
       res.json({
         error: result.error
       });
     } else {
-      
+      console.log("todo ok")
       //returnData.points = member.points; REVISAR ESTO!!!!!!
       //console.log(`returndata: ${returnData}`);
       res.json({

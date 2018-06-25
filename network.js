@@ -20,22 +20,18 @@ let factory;
 async function checkIfUserExists(graduateRut) {
   //adminConnection = new AdminConnection();
   //businessNetworkName = 'degree';
-  console.log("hola")
+  console.log("empieza a ejecutarse función checkIfUserExists")
 
   businessNetworkConnection = new BusinessNetworkConnection();
     await businessNetworkConnection.connect('admin@degree');
-console.log("dsaad")
+console.log("se conecta con la tarjeta admin")
     //get the factory for the business network
     factory = businessNetworkConnection.getBusinessNetwork().getFactory();
-console.log("dsada")
-    
-    
-    console.log("Hola")
     //add graduate participant
     const participantRegistry = await businessNetworkConnection.getParticipantRegistry(namespace + '.Graduate');
-    console.log("dsds")
+    console.log("se crea participantRegistry")
     const check = await participantRegistry.exists(graduateRut);
-    console.log("dsds");
+    console.log("se crea variable boolean para ver si usuario existe:");
     console.log(check);
     return check;
 }
@@ -395,20 +391,19 @@ module.exports = {
   * @param {Integer} points Points value
   */
  createRegistry: async function (cardId, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa) {
-  console.log(degreeType)
+  console.log("Comienza a ejecutarse createRegistry")
   try {
 
     //connect to network with cardId
     businessNetworkConnection = new BusinessNetworkConnection();
     businessNetworkDefinition = await businessNetworkConnection.connect(cardId);
-    
+    console.log("se conecta con la red ")
 
     //businessNetworkDefinition = new BusinessNetworkDefinition();
     
     degreesRegistry = await businessNetworkConnection.getAssetRegistry(namespace + '.Degree');
-    console.log(degreeType);
+    console.log("create degreesRegistry");
     factory = businessNetworkDefinition.getFactory();
-    console.log(degreeType);
 
     //get the factory for the business network.
     
@@ -431,16 +426,16 @@ module.exports = {
     degree2.startYear = startYear;
     degree2.gradYear = gradYear;
     degree2.gpa = gpa;
-    console.log(degree2)
+    console.log("Antes de añadir registros")
     const degree = await degreesRegistry.addAll([degree2])
-    console.log("aqui")
+    console.log("registro creado")
 
 
     return true;
   }
   catch(err) {
     //print and return error
-    console.log(err);
+    console.log(`err: ${err}`);
     var error = {};
     error.error = err.message;
     return error;
@@ -579,21 +574,25 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
     //Check if user exist
     let check = await checkIfUserExists(graduateRut);
 
+    console.log("Termina de ejecturarse función checkIfUserExists() y comienza el if statement de check")
+
     if (check != true) {
     //if user does not exist
-    //add graduate participant
+    //add graduate participant;
+    console.log("Si check es != de true y empieza a ejecutarse función this.registerGraduate")
     await this.registerGraduate(cardId, graduateRut,firstName, lastName, email, phoneNumber);
-
+    console.log("Comienza a ejecutarse función this.createRegistry")
     //create registry
     await this.createRegistry(cardIdUni, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa);
     console.log("Usuario y registro creado")
     return true;
-
+    console.log("after return != not true")
     } else {
-
+      console.log("dentro del else y comienza a ejecutarse this.createRegistry")
     await this.createRegistry(cardIdUni, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa);
     console.log("Usuario ya existe. Sólo se crea registro")
     return true;
+    console.log("after return else")
     }
     
   }
