@@ -546,5 +546,19 @@ module.exports = {
   }
 },
 
+//FUNCIÓN PARA CREAR USUARIO Y REGISTRO DE TITULO AL MISMO TIEMPO
+//SOLO PARA SER UTILIZADO POR UNIVERSIDADES
+
+createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName, email, phoneNumber, degreeId, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa) {
+  try {
+    
+  }
+  catch(error) {
+    var error = {};
+    error.error = err.message;
+    return error
+  }
+}
+
     //AGREGAR MAS FUNCIONES AQUI!
 }

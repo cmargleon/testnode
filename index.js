@@ -5,6 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const request = require('request');
 const path = require('path');
+const uuidv1 = require('uuid/v1');
 
 //create express web-app
 const app = express();
@@ -19,7 +20,7 @@ app.use(bodyParser.urlencoded({ extended: true}))
 app.use(bodyParser.json());
 
 app.get('/test', function(req, res) {
-    res.sendStatus(200);
+    res.send(uuidv1());
 })
 
 //post call to register graduate on the network
@@ -306,6 +307,27 @@ app.post('/api/queryfullregistry', function(req, res){
   network.queryRegistries(cardId, graduateRut)
   .then(data => console.log(`data: ${data}`))
 });
+
+app.post('/api/createuserandregistry', function(req, res){
+  var degreeId = uuidv1();
+  var graduateRut = req.body.graduaterut;
+  var owner = req.body.owner;
+  var degreeType = req.body.degreetype;
+  var degreeStatus = req.body.degreestatus;
+  var major = req.body.major;
+  var minor = req.body.minor;
+  var startYear = req.body.startyear;
+  var gradYear = req.body.gradyear;
+  var gpa = req.body.gpa;
+  var cardId = req.body.cardid;
+  var firstName = req.body.firstname;
+  var lastName = req.body.lastname;
+  var email = req.body.email;
+  var phoneNumber = req.body.phonenumber;
+  console.log(degreeId)
+
+  network.createUserAndRegistry(cardId, graduateRut, firstName, lastName, email, phoneNumber, degreeId, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa);
+})
 
 //declare port
 var port = process.env.PORT || 8000;
