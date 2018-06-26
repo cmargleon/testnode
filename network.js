@@ -137,11 +137,11 @@ module.exports = {
     */
    registerGraduate: async function (cardId, graduateRut,firstName, lastName, email, phoneNumber) {
       try {
-  
+        console.log("se empieza a ejecutar registerGraduate")
         //connect as admin
         businessNetworkConnection = new BusinessNetworkConnection();
         await businessNetworkConnection.connect('admin@degree');
-  
+        console.log("se conectó con admindegreee en register")
         //get the factory for the business network
         factory = businessNetworkConnection.getBusinessNetwork().getFactory();
   
@@ -151,21 +151,21 @@ module.exports = {
         graduate.lastName = lastName;
         graduate.email = email;
         graduate.phoneNumber = phoneNumber;
-        
+        console.log("antes de añadir participante");
   
         //add graduate participant
         const participantRegistry = await businessNetworkConnection.getParticipantRegistry(namespace + '.Graduate');
         await participantRegistry.add(graduate);
-  
+        console.log("despues de añadir participante");
         //issue identity
         const identity = await businessNetworkConnection.issueIdentity(namespace + '.Graduate#' + graduateRut, cardId);
-  
+        console.log("issue ident")
         //import card for identity
         await importCardForIdentity(cardId, identity);
-  
+        console.log("import card")
         //disconnect
         await businessNetworkConnection.disconnect('admin@degree');
-  
+        console.log("Justo antes de terminar de crear graduate")
         return true;
       }
       catch(error) {
