@@ -33,7 +33,7 @@ app.post('/api/registerGraduate', function(req, res) {
     var email = req.body.email;
     var phoneNumber = req.body.phonenumber;
 
-    network.registerGraduate(cardId, graduateRut, firstName, lastName, email, phoneNumber)
+    network.onlyRegisterGraduate(cardId, graduateRut, firstName, lastName, email, phoneNumber)
       .then((response) => {
        //return error if error in response
         if (response.error != null) {
@@ -235,7 +235,7 @@ app.post('/api/loginbusiness', function(req,res) {
 app.post('/api/createregistry', function(req, res) {
   //console.log(req.body.degreeid);
   
-  var degreeId = req.body.degreeid;
+  var degreeId = uuidv1();
   var graduateRut = req.body.graduaterut;
   var owner = req.body.owner;
   var degreeType = req.body.degreetype;
@@ -251,7 +251,7 @@ app.post('/api/createregistry', function(req, res) {
   var returnData = {};
   cardId = req.body.cardid
 
-  network.createRegistry(cardId, req.body.degreeid, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa)
+  network.createOnlyRegistry(cardId, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa)
   .then((degree) => {
     //return error if error in response
     if (degree.error != null) {
@@ -329,6 +329,7 @@ app.post('/api/createuserandregistry', function(req, res){
 
   network.createUserAndRegistry(cardId, graduateRut, firstName, lastName, email, phoneNumber, degreeId, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, cardIdUni)
   .then((result) => {
+    console.log(`result: ${result}`)
     //return error if error in response
     if (result.error != null) {
         console.log("ERROR AL FINALS!!!")

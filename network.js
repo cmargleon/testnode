@@ -168,15 +168,67 @@ module.exports = {
   
         return true;
       }
-      catch(err) {
-        //print and return error
-        console.log(err);
-        var error = {};
-        error.error = err.message;
-        return error;
+      catch(error) {
+        //NEED TO CATCH THIS ERROR IN mainFunction()
+        //var error2 = {};
+        //error2.error = error.message;
+        console.log(`error en create:${error}`)
+        throw error; // Rethrow
       }
   
     },
+
+    /*
+    * Create Graduate participant and import card for identity
+    * @param {String} cardId Import card id for Graduate
+    * @param {String} graduateRut Graduate account number as identifier on network
+    * @param {String} firstName Graduate first name
+    * @param {String} lastName Graduate last name
+    * @param {String} phoneNumber Graduate phone number
+    * @param {String} email Graduate email
+    */
+   onlyRegisterGraduate: async function (cardId, graduateRut,firstName, lastName, email, phoneNumber) {
+    try {
+
+      //connect as admin
+      businessNetworkConnection = new BusinessNetworkConnection();
+      await businessNetworkConnection.connect('admin@degree');
+
+      //get the factory for the business network
+      factory = businessNetworkConnection.getBusinessNetwork().getFactory();
+
+      //create graduate participant
+      const graduate = factory.newResource(namespace, 'Graduate', graduateRut);
+      graduate.firstName = firstName;
+      graduate.lastName = lastName;
+      graduate.email = email;
+      graduate.phoneNumber = phoneNumber;
+      
+
+      //add graduate participant
+      const participantRegistry = await businessNetworkConnection.getParticipantRegistry(namespace + '.Graduate');
+      await participantRegistry.add(graduate);
+
+      //issue identity
+      const identity = await businessNetworkConnection.issueIdentity(namespace + '.Graduate#' + graduateRut, cardId);
+
+      //import card for identity
+      await importCardForIdentity(cardId, identity);
+
+      //disconnect
+      await businessNetworkConnection.disconnect('admin@degree');
+
+      return true;
+    }
+    catch(err) {
+      //print and return error
+      console.log(err);
+      var error = {};
+      error.error = err.message;
+      return error;
+    }
+
+  },
 
     /*
     * Create University participant and import card for identity
@@ -433,12 +485,72 @@ module.exports = {
 
     return true;
   }
+  catch(error) {
+    //NEED TO CATCH THIS ERROR IN mainFunction()
+    //var error2 = {};
+    //error2.error = error.message;
+    console.log(`error en create:${error}`)
+    throw error; // Rethrow
+  }
+
+},
+
+/*
+  * Create only registry
+  * @param {String} cardId Card id to connect to network
+  * @param {String} accountNumber Account number of member
+  * @param {String} partnerId Partner Id of partner
+  * @param {Integer} points Points value
+  */
+ createOnlyRegistry: async function (cardId, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa) {
+  console.log("Comienza a ejecutarse createRegistry")
+  try {
+
+    //connect to network with cardId
+    businessNetworkConnection = new BusinessNetworkConnection();
+    businessNetworkDefinition = await businessNetworkConnection.connect(cardId);
+    console.log("se conecta con la red ")
+
+    //businessNetworkDefinition = new BusinessNetworkDefinition();
+    
+    degreesRegistry = await businessNetworkConnection.getAssetRegistry(namespace + '.Degree');
+    console.log("create degreesRegistry");
+    factory = businessNetworkDefinition.getFactory();
+
+    //get the factory for the business network.
+    
+    var rutString = graduateRut.toString();
+
+    //const degreeRegistry = await businessNetworkConnection.getAssetRegistry(namespace + '.Degree');
+    //const owner = factory.newResource(namespace, 'Graduate', rutString);
+
+    let degree2 = factory.newResource(namespace, 'Degree', degreeId);
+    
+
+    
+
+    degree2.owner = "org.degree.ucsd.Graduate#" + rutString;
+    degree2.graduateRut = rutString;
+    degree2.degreeType = degreeType;
+    degree2.degreeStatus = degreeStatus;
+    degree2.major = major;
+    degree2.minor = minor;
+    degree2.startYear = startYear;
+    degree2.gradYear = gradYear;
+    degree2.gpa = gpa;
+    console.log("Antes de añadir registros")
+    const degree = await degreesRegistry.addAll([degree2])
+    console.log("registro creado")
+
+
+    return true;
+  }
   catch(err) {
     //print and return error
-    console.log(`err: ${err}`);
+    console.log(err);
     var error = {};
     error.error = err.message;
-    return error;
+    return error
   }
 
 },
@@ -596,12 +708,14 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
     }
     
   }
-  catch(error) {
+  catch(err) {
     //print and return error
+    console.log(`error en createandregister: ${error}`);
     console.log(err);
+    console.log("EORR")
     var error = {};
     error.error = err.message;
-    return error
+    return error;
   }
 }
 
