@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const request = require('request');
 const path = require('path');
 const uuidv1 = require('uuid/v1');
-const admin = require('firebase-admin');
+//const admin = require('firebase-admin');
 
 //create express web-app
 const app = express();
@@ -20,18 +20,33 @@ var network = require('./network.js');
 app.use(bodyParser.urlencoded({ extended: true}))
 app.use(bodyParser.json());
 
-admin.initializeApp({
-  credential: admin.credential.cert({
-    projectId: "verified-988d9",
-    clientEmail: "firebase-adminsdk-du5im@logindb-87a54.iam.gserviceaccount.com",
-    private_key: "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDVOqzmMB4Uzo/Y\n8LtqH6GbF74wTPEnchrR64l2yYSCqRYhLkKBS7YKUvVqzim9u8P8+7Xsjj4h/nQc\noGzkIBHI3L5Z+h5x/wdXicBs3EySOhklPpUAM1DNlPqnhs7lc0+9NwxQvGJY88M5\nz6fKg874kMlXcWZF77e+FdPgHspkPmSiMzqny/VULLH9LDo3ZiCIMBrc6ZVb24rN\n6mezFd3D2lNKKZr4knW5Bvu9fDRd593VlBLqi3Ae2ku85hDilMt4+v3Ds3Uwj/SX\nuvxsva//qMwErBlOPleX4ffPQ7kukDA4pkkjNChbvOYM+hZgFKnn/4/xW2oTMSpL\nk0T1r6bVAgMBAAECggEAPUKEvwNO+SJZQHX1GimpR8IcAYtxcyg8nVfCoA6IU/OZ\nKII+WCA01iV8XamKY3jI92snmqVJI4ITwM+0SRwPj/ofdAFAcvbWmKc6Uew+0XoA\nlGs06qBTlCS7mJrJ4TDuVUm175IX3T93NKo8phmVQmNyfP1W6TvUObfSrd6avg6K\nm6rK/dY0czZ9H5RQe3cEG+HolMVviW++r9SnM769PF1T8iNY04mUSpV6A0GKhbx/\n8PbVGpnpC1KGi+x5N/fGk99Z2ebx/RKiElPDipcNV55c9l1QojDXhM2pW01xafVR\nVNAJshaB8s7JTPrb8C+cngijMNXhTpBQC4aEZAOqNwKBgQDuSqtiEbewAz19dEP0\nDkH4jlFrsSuYzEzx+kJqC29KFp/jiY7AthvDohvA3HkdKd/4diSzM2f4dOhKmABB\ni6K6uqLIme6hBzAs96exfQuBNA6VV+yzIfMHJaQzj3QqjobYbpHNd8brkEJkY1Zr\n+gH8NsxJdyWeibKDiAnKAXht0wKBgQDlEzXE51ed3uU1EGqyYKYKqeAJoBYdQwoV\nrnxdxq2x4TMeEMrjoQ4fB055xdUFr/K+jjdxspHounpE++5y0R2+RcJMIz0R8YZ1\nqO3J74Egu/vvyWzuHB8hPo1UowbIZcsKTTnYjUKjseoCWVtt03uLIM2OuOb3y054\nl7VJ/+ontwKBgHI2r/aNb3GZ2/spovhzbQNpk3T+slrGcYr53KNfX7QvK+uvnxCX\nOK+IH61M/3APBh7c4bJSzV61CjHWsSi5eQHvOt7TiSD9hQXInkPgH4eKIANM5VLm\nzsl6LT3ZYGCVd+R8+r10z49Q0cG0K1QNvK3axgfgZ9OZRErvBWIhWkupAoGBALzD\nW6dpyvU4Wz+iy4k5wxk+anMEC7UJLSI4qhrMQQ03OVwpEkcIzA4dgzktICCToEAO\nCPoT39Aa+e4me5L5Zr0H1tfOoeBLWjVSgr/IMGu8/BnXrX94hN5sISIBRPGVj/5p\nLKWZobQqQ160K3cQsdkvqrNVAl5mlb8hpC3aSCV5AoGBALkzs4WdOeYCNT5r9OIM\ng58jTDnnkK6fOFF3Hete3MPdTQAU1WC8UeTutUCW2zsp4UIMSH8vQ3RPTqqmRt20\nwzY7Hx3SHNp18fVpwdK+tjLKHGjlP7Y5Ipj0s21ysD/+1m5kD/qAyHebLGlwebci\nbfkjAuSYJDMaABmRwCup2u+X\n-----END PRIVATE KEY-----\n",
-  }),
-  databaseURL: "https://logindb-87a54.firebaseio.com"
-});
+
 
 app.get('/test', function(req, res) {
     res.send(uuidv1());
+});
+
+app.get('/firebase', function(req,res) {
+  let uid = uuidv1()
+
+  network.createUserFirebase()
+  .then((response) => {
+    //return error if error in response
+    if (response.error != null) {
+    res.json({
+        error: response.error
+    });
+    } else {
+    //else return success
+    res.json({
+        success: response
+    });
+    }
+});
+
+  
 })
+
 
 //post call to register graduate on the network
 app.post('/api/registerGraduate', function(req, res) {

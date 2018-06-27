@@ -1,6 +1,16 @@
 const AdminConnection = require('composer-admin').AdminConnection;
 const BusinessNetworkConnection = require('composer-client').BusinessNetworkConnection;
 const { BusinessNetworkDefinition, CertificateUtil, IdCard } = require('composer-common');
+const admin = require('firebase-admin');
+
+admin.initializeApp({
+  credential: admin.credential.cert({
+    projectId: "logindb-87a54",
+    clientEmail: "firebase-adminsdk-du5im@logindb-87a54.iam.gserviceaccount.com",
+    private_key: "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC4TMPBOeO6StB1\nuGg8Fcdapok+SE0EjwLIKLNdQinJLF1ipmq1AwateJiHhJFS+hX3VLWlPsHc0vDX\nEDo/inHO3AI47ZjUKxlaog+ysas1Z4+QueOs7vYBml4Upkf9PUI74ugYkf1gAJvR\nILc2F+QGCrVTUDI2H55Bur8dWqFJcYTrH5eOtr1Nt5+JXch++DLV+/P/7apU/FLg\nWlVcllsL32oPUapaeaZspWEHm9KcfduNXuIyYC+OcBVw0IFEViQMKLj1GFe0GeeK\nh9E55PL48hdi/86TgjEdbWLNCkbWfVjqN03ncTxHgR7nPCzDDCFtmfOAaasPtbhx\nABDCDFdhAgMBAAECggEABgcgue+qRpwO0GLdKeXudMUQpRRZTIZe6WwHXcv9sOI+\nFa1qvQvhyoewuXH5DNU4JbREEqkITzApB2e0+AIPsdvZSMJgpsPYGvJFACu2dVMz\nS2EBFNVl/2xsmlFL9njr8yh7Pd58gojSj9b5lw/V+eqcvqJXWhTTqMOyX4Po1Y2O\nJHUpeg3GVFcaO4U6U5tQEh8mgIhZo9LYs+vkB24www0aqd2b/lxEt33CweCtrhZt\nYVUggm/mizFDgU8VH2/CGQdNYQ8icB3twZnn1n+TY4ACgE7XPaUq2wD4l0Teji8N\njWkEOJof3j26hAjAqqkP3AZVqxs+/4jqgZXSWySRaQKBgQD0M7IycVW5F4Gok85Z\nvI+qG4kSI9a0NslScOcXcBUrQOJz4YvcTbzZTsXfGQT+Ca/pVpxlGTOmH7jhnlSb\nKV3ueSI+fqLEPHCUhmj+X3gUe+RgqpI4NZKhDkliCJT+AA9HuFbpX0hcIXWHiDv4\n283wuIqKXLanTZVcvhbqGD11dQKBgQDBNDI5jnMvEt4ODe3NISj5xwW1K7U/Ecew\nn6Eb95XijVFu7U6hNQOdUDdCcB6dyFs8lpoj0O3Wg5ROFpva0R2lkPJ8F3NOpS40\ny+irRfupgwmIlQkj5OdSaZIMFa0FHS4GJuFzr3iKHV//iwnpkWeSF78hTxAZOOkd\n1WMY0EYgvQKBgAfcujoBiB8DcLs6twQQnBd/93PMD5eRw/2RgP8yLpxL5H6Snmwj\nXJcqgBhkt9JuAWnjzfk7THxmvQ8Wh+bO+CU7ZSzZ6ueigoVlpm+6JyWRr5KlKzwA\nDY595ULwv8tFuTg36SRuWugMc7o/Wp7yhLjhWCSIQ6EzUEHCJP64dRIZAoGBALph\nFgp8JxXER76bJUp7sMG0gwcRERm0l0UF2S/XmhohZetytiXBtKjvlz9aVc60V3+N\ncUkX5jjIWisymEtw6/6qY6HeJXg61OZNxzhinLIcHPhLfbPIwHa6LQ/HYU/LpHh+\nzYMCRXBHgjJM+NT/VkCS8+i4ErmiMxB6p8xqLxypAoGBAI+oN0WrQxNWHhY4sszC\naZNutBT/YPY4CTwYOiM/ci6kGlpBBkPbjzg6zLEqT0XQoP7IyQ9tgGnpfsQKewzP\nRXFmQ2tdymxgzkzyb2Vp99y7FD3GhveW+3ZUIu5k9mhOeB0DxBUsuD/xrbalvSWA\n9Qy1pwCcGjBrmoXE0T7AB56K\n-----END PRIVATE KEY-----\n",
+  }),
+  databaseURL: "https://logindb-87a54.firebaseio.com"
+});
 
 //declate namespace
 const namespace = 'org.degree.ucsd';
@@ -16,6 +26,20 @@ let businessNetworkConnection;
 
 let businessNetworkName = 'degree';
 let factory;
+
+async function createUserFirebase(email, firstName, lastName) {
+  try {
+    await admin.auth().createUser({
+      email: email,
+      password: "master",
+      displayName: `${firstName}` + `${lastName}`
+    });
+    console.log("lo hizo")
+    return true
+  } catch(err) {
+    throw err;
+  }
+}
 
 async function checkIfUserExists(graduateRut) {
   //adminConnection = new AdminConnection();
@@ -172,7 +196,7 @@ module.exports = {
         //NEED TO CATCH THIS ERROR IN mainFunction()
         //var error2 = {};
         //error2.error = error.message;
-        console.log(`error en create:${error}`)
+        console.log(`error en create:${error}`);
         throw error; // Rethrow
       }
   
@@ -682,13 +706,14 @@ module.exports = {
 createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName, email, phoneNumber, degreeId, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, cardIdUni) {
   try {
     
-    
+    let userFirebase = await createUserFirebase(email);
+    console.log(`userFire: ${userFirebase}`)
     //Check if user exist
     let check = await checkIfUserExists(graduateRut);
 
-    console.log("Termina de ejecturarse función checkIfUserExists() y comienza el if statement de check")
+    console.log("Termina de ejecturarse función checkIfUserExists() y comienza el if statement de check y userFirebase")
 
-    if (check != true) {
+    if (check != true && userFirebase != true) {
     //if user does not exist
     //add graduate participant;
     console.log("Si check es != de true y empieza a ejecutarse función this.registerGraduate")
@@ -717,7 +742,37 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
     error.error = err.message;
     return error;
   }
-}
+},
+
+firebaseTest: async function (uid) {
+  var db = admin.database();
+    //res.send(uuidv1());
+    var ref = db.ref('users/' + uid);
+    /*
+    var ref2 = db.ref("hola");
+    var userUID = uuidv1();
+    var newRef = ref.push({
+    "clpmount": "req.body.cantidadCLP",
+    "currencyMount": "req.body.totalCompraCrypto",
+    "rate": "req.body.exchangeRate",
+    "blockaddress": "req.body.blockaddress",
+    "uid": userUID,
+    "id": uuidv1(),
+    "createdAt": Date.now(),
+    currency: "req.body.currency",
+    txId: ""
+    });
+    var newKey= newRef.key;
+    var keyTrans = {};
+    keyTrans[newKey] = true;
+    ref2.child(userUID).update(keyTrans);
+    */
+    return ref.set({
+      "cardid": "prueba"
+    })
+
+    //res.send(ref);
+},
 
     //AGREGAR MAS FUNCIONES AQUI!
 }
