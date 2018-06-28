@@ -770,12 +770,14 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
       console.log("dp de crear usuario firebase");
       await this.createRegistry(cardIdUni, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa);
       console.log("dp de crear registro");
+      return true;
     } else if (checkBlockchain != true && checkFirebase != false) {
       console.log("if if checkBlockchain != true && checkFirebase != false")
       await this.registerGraduate(cardId, graduateRut,firstName, lastName, email, phoneNumber);
       console.log("dp de crear usuario blockchain");
       await this.createRegistry(cardIdUni, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa);
       console.log("dp de crear registro");
+      return true;
     }
     else {
       console.log("dentro del else y comienza a ejecutarse this.createRegistry")
