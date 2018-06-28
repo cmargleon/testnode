@@ -39,11 +39,13 @@ async function createUserFirebase(email, firstName, lastName, cardId) {
     var db = admin.database();
     //res.send(uuidv1());
     var ref = db.ref('users/' + uid);
+    /*
     await ref.set({
       "cardid": cardId
     })
     console.log(`userDetails: ${userDetails.uid}`);
     console.log("lo hizo");
+    */
     return true
   } catch(err) {
     console.log("tirando error")
@@ -61,6 +63,7 @@ async function userExistFirebase(email) {
       console.log(`errorrr: ${error.code}`);
       return false
     } else {
+      console.log("ERROOOOR")
       throw error
     }
     
