@@ -27,16 +27,26 @@ let businessNetworkConnection;
 let businessNetworkName = 'degree';
 let factory;
 
-async function createUserFirebase(email, firstName, lastName) {
+async function createUserFirebase(email, firstName, lastName, cardId) {
+  console.log("en firebase")
   try {
-    await admin.auth().createUser({
+    let userDetails = await admin.auth().createUser({
       email: email,
       password: "master",
       displayName: `${firstName}` + `${lastName}`
     });
-    console.log("lo hizo")
+    let uid = userDetails.uid;
+    var db = admin.database();
+    //res.send(uuidv1());
+    var ref = db.ref('users/' + uid);
+    await ref.set({
+      "cardid": cardId
+    })
+    console.log(`userDetails: ${userDetails.uid}`);
+    console.log("lo hizo");
     return true
   } catch(err) {
+    console.log("tirando error")
     throw err;
   }
 }
@@ -497,13 +507,13 @@ module.exports = {
   * @param {String} partnerId Partner Id of partner
   * @param {Integer} points Points value
   */
- createRegistry: async function (cardId, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa) {
+ createRegistry: async function (cardIdUni, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa) {
   console.log("Comienza a ejecutarse createRegistry")
   try {
 
     //connect to network with cardId
     businessNetworkConnection = new BusinessNetworkConnection();
-    businessNetworkDefinition = await businessNetworkConnection.connect(cardId);
+    businessNetworkDefinition = await businessNetworkConnection.connect(cardIdUni);
     console.log("se conecta con la red ")
 
     //businessNetworkDefinition = new BusinessNetworkDefinition();
@@ -745,7 +755,8 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
     console.log("antes de firebase")
     let checkFirebase = await userExistFirebase(email);
     console.log(`dsadas: ${checkFirebase}`);
-    console.log("dp de firebase")
+    console.log("dp de firebase");
+    await createUserFirebase(email, firstName, lastName, cardId);
     let checkBlockchain = await checkIfUserExists(graduateRut);
     
 
@@ -756,7 +767,7 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
     //if user does not exist
     //add graduate participant;
     console.log("No está registrado ni en la blockchain ni en firebase");
-    await createUserFirebase(email, firstName, lastName);
+    await createUserFirebase(email, firstName, lastName, cardId);
     //console.log("Si check es != de true y empieza a ejecutarse función this.registerGraduate")
     await this.registerGraduate(cardId, graduateRut,firstName, lastName, email, phoneNumber);
     console.log("Comienza a ejecutarse función this.createRegistry")
@@ -766,7 +777,7 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
     return true;
     } else if (checkBlockchain != false && checkFirebase != true) {
       console.log("if checkBlockchain != false && checkFirebase != true")
-      await createUserFirebase(email, firstName, lastName);
+      await createUserFirebase(email, firstName, lastName, cardId);
       console.log("dp de crear usuario firebase");
       await this.createRegistry(cardIdUni, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa);
       console.log("dp de crear registro");
@@ -798,35 +809,6 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
   }
 },
 
-firebaseTest: async function (uid) {
-  var db = admin.database();
-    //res.send(uuidv1());
-    var ref = db.ref('users/' + uid);
-    /*
-    var ref2 = db.ref("hola");
-    var userUID = uuidv1();
-    var newRef = ref.push({
-    "clpmount": "req.body.cantidadCLP",
-    "currencyMount": "req.body.totalCompraCrypto",
-    "rate": "req.body.exchangeRate",
-    "blockaddress": "req.body.blockaddress",
-    "uid": userUID,
-    "id": uuidv1(),
-    "createdAt": Date.now(),
-    currency: "req.body.currency",
-    txId: ""
-    });
-    var newKey= newRef.key;
-    var keyTrans = {};
-    keyTrans[newKey] = true;
-    ref2.child(userUID).update(keyTrans);
-    */
-    return ref.set({
-      "cardid": "prueba"
-    })
-
-    //res.send(ref);
-},
 
     //AGREGAR MAS FUNCIONES AQUI!
 }

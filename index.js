@@ -271,12 +271,13 @@ app.post('/api/createregistry', function(req, res) {
   var gradYear = req.body.gradyear;
   var gpa = req.body.gpa;
   var cardId = req.body.cardid;
+  var uid = req.body.uid;
 
   //cardId = req.body.cardid;
   var returnData = {};
   cardId = req.body.cardid
 
-  network.createOnlyRegistry(cardId, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa)
+  network.createRegistry(cardId, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, uid)
   .then((degree) => {
     //return error if error in response
     if (degree.error != null) {
