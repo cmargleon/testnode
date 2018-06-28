@@ -507,13 +507,13 @@ module.exports = {
   * @param {String} partnerId Partner Id of partner
   * @param {Integer} points Points value
   */
- createRegistry: async function (cardIdUni, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa) {
+ createRegistry: async function (cardId, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa) {
   console.log("Comienza a ejecutarse createRegistry")
   try {
 
     //connect to network with cardId
     businessNetworkConnection = new BusinessNetworkConnection();
-    businessNetworkDefinition = await businessNetworkConnection.connect(cardIdUni);
+    businessNetworkDefinition = await businessNetworkConnection.connect(cardId);
     console.log("se conecta con la red ")
 
     //businessNetworkDefinition = new BusinessNetworkDefinition();
@@ -809,6 +809,35 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
   }
 },
 
+firebaseTest: async function (uid) {
+  var db = admin.database();
+    //res.send(uuidv1());
+    var ref = db.ref('users/' + uid);
+    /*
+    var ref2 = db.ref("hola");
+    var userUID = uuidv1();
+    var newRef = ref.push({
+    "clpmount": "req.body.cantidadCLP",
+    "currencyMount": "req.body.totalCompraCrypto",
+    "rate": "req.body.exchangeRate",
+    "blockaddress": "req.body.blockaddress",
+    "uid": userUID,
+    "id": uuidv1(),
+    "createdAt": Date.now(),
+    currency: "req.body.currency",
+    txId: ""
+    });
+    var newKey= newRef.key;
+    var keyTrans = {};
+    keyTrans[newKey] = true;
+    ref2.child(userUID).update(keyTrans);
+    */
+    return ref.set({
+      "cardid": "prueba"
+    })
+
+    //res.send(ref);
+},
 
     //AGREGAR MAS FUNCIONES AQUI!
 }
