@@ -756,7 +756,7 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
     //if user does not exist
     //add graduate participant;
     console.log("No está registrado ni en la blockchain ni en firebase");
-    await this.createUserFirebase(email, firstName, lastName);
+    await createUserFirebase(email, firstName, lastName);
     //console.log("Si check es != de true y empieza a ejecutarse función this.registerGraduate")
     await this.registerGraduate(cardId, graduateRut,firstName, lastName, email, phoneNumber);
     console.log("Comienza a ejecutarse función this.createRegistry")
