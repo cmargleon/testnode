@@ -759,7 +759,7 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
     let checkFirebase = await userExistFirebase(email);
     console.log(`dsadas: ${checkFirebase}`);
     console.log("dp de firebase");
-    await createUserFirebase(email, firstName, lastName, cardId);
+    //await createUserFirebase(email, firstName, lastName, cardId);
     let checkBlockchain = await checkIfUserExists(graduateRut);
     
 
