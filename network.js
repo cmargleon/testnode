@@ -812,35 +812,6 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
   }
 },
 
-firebaseTest: async function (uid) {
-  var db = admin.database();
-    //res.send(uuidv1());
-    var ref = db.ref('users/' + uid);
-    /*
-    var ref2 = db.ref("hola");
-    var userUID = uuidv1();
-    var newRef = ref.push({
-    "clpmount": "req.body.cantidadCLP",
-    "currencyMount": "req.body.totalCompraCrypto",
-    "rate": "req.body.exchangeRate",
-    "blockaddress": "req.body.blockaddress",
-    "uid": userUID,
-    "id": uuidv1(),
-    "createdAt": Date.now(),
-    currency: "req.body.currency",
-    txId: ""
-    });
-    var newKey= newRef.key;
-    var keyTrans = {};
-    keyTrans[newKey] = true;
-    ref2.child(userUID).update(keyTrans);
-    */
-    return ref.set({
-      "cardid": "prueba"
-    })
-
-    //res.send(ref);
-},
 
     //AGREGAR MAS FUNCIONES AQUI!
 }

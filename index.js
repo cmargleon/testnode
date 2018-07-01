@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const request = require('request');
 const path = require('path');
 const uuidv1 = require('uuid/v1');
+const cors = require('cors')({origin: true});
 //const admin = require('firebase-admin');
 
 //create express web-app
@@ -20,7 +21,7 @@ var network = require('./network.js');
 app.use(bodyParser.urlencoded({ extended: true}))
 app.use(bodyParser.json());
 
-
+app.use(cors);
 
 app.get('/test', function(req, res) {
     res.send(uuidv1());
