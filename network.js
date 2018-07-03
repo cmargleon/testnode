@@ -100,8 +100,17 @@ async function createUserFirebase(email, firstName, lastName, cardId, graduateRu
     var refUid = db.ref('users/uid/' + uid);
     var refRut = db.ref('users/rut/' + graduateRut);
 
-    console.log(cardId, email, firstName, lastName, graduateRut, uid)
-    
+    console.log(cardId, email, firstName, lastName, graduateRut, uid);
+
+    let kkkk = {
+      "cardid": cardId,
+      "email": email,
+      "firstName": firstName,
+      "lastName" : lastName,
+      "rut": graduateRut
+    };
+    console.log(kkkk);
+    console.log("antes de primer ref")
     const afterRefUid = await refUid.set({
       "cardid": cardId,
       "email": email,
@@ -109,13 +118,15 @@ async function createUserFirebase(email, firstName, lastName, cardId, graduateRu
       "lastName" : lastName,
       "rut": graduateRut
     });
+    console.log("antes de seg ref")
     const afterRefRut = await refRut.set({
       "cardid": cardId,
       "email": email,
       "firstName": firstName,
       "lastName" : lastName,
       "uid": uid
-    })
+    });
+    console.log("dp de seg ref")
     console.log(afterRefUid);
     console.log(afterRefRut);
     console.log(`userDetails: ${userDetails.uid}`);
