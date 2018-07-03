@@ -96,9 +96,10 @@ async function createUserFirebase(email, firstName, lastName, cardId, graduateRu
     });
     let uid = userDetails.uid;
     var db = admin.database();
+    let ruut = "12321232"
     //res.send(uuidv1());
     var refUid = db.ref('users/uid/' + uid);
-    var refRut = db.ref('users/rut/' + graduateRut);
+    var refRut = db.ref('users/rut/' + ruut);
 
     console.log(cardId, email, firstName, lastName, graduateRut, uid);
 
