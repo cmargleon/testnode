@@ -76,7 +76,8 @@ app.post('/api/registerGraduate', function(req, res) {
 });
 
 //post call to register university on the network
-app.post('/api/registerUniversity', function(req, res) {
+app.post('/api/registeronlyUniversity', function(req, res) {
+  console.log(`uni: ${req.body.universityRut}`)
     console.log("Creando cuenta universidad");
     var universityRut = req.body.universityrut;
     var cardId = req.body.cardid;
@@ -93,7 +94,45 @@ app.post('/api/registerUniversity', function(req, res) {
                 return;
               } else {
                       //else register university on the network
-                network.registerUniversity(cardId, universityRut, shortName, fullName, email)
+                network.onlyRegisterUniversity(cardId, universityRut, shortName, fullName, email)
+                .then((response) => {
+                  //return error if error in response
+                  if (response.error != null) {
+                  res.json({
+                      error: response.error
+                  });
+                  } else {
+                  //else return success
+                  res.json({
+                      success: response
+                  });
+                  }
+              });
+              }
+        })
+});
+
+//post call to register university on the network
+app.post('/api/registerUniversity', function(req, res) {
+  console.log(`uni: ${req.body.universityRut}`)
+    console.log("Creando cuenta universidad");
+    var universityRut = req.body.universityrut;
+    var cardId = req.body.cardid;
+    var shortName = req.body.shortname;
+    var fullName = req.body.fullname;
+    var email = req.body.email;
+
+    console.log(req.body);
+
+    validate.validateUniversityRegistration(universityRut, cardId, shortName, fullName, email)
+        .then((response) => {
+            if (response.error != null) {
+                res.sendStatus(404);
+                return;
+              } else {
+                console.log("antes de iniciar registro en index")
+                      //else register university on the network
+                network.registerUniversityInBlockchainAndFirebase(cardId, universityRut, shortName, fullName, email)
                 .then((response) => {
                   //return error if error in response
                   if (response.error != null) {
@@ -346,7 +385,7 @@ app.post('/api/createuserandregistry', function(req, res){
   var startYear = req.body.startyear;
   var gradYear = req.body.gradyear;
   var gpa = req.body.gpa;
-  var cardId = req.body.cardid;
+  var cardId = uuidv1();
   var firstName = req.body.firstname;
   var lastName = req.body.lastname;
   var email = req.body.email;

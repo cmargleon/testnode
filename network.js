@@ -27,7 +27,66 @@ let businessNetworkConnection;
 let businessNetworkName = 'degree';
 let factory;
 
-async function createUserFirebase(email, firstName, lastName, cardId) {
+async function getGraduateCardId(graduateRut) {
+  console.log("engetcardid")
+  try {
+    var db = admin.database();
+    var ref = db.ref(`/users/rut/${graduateRut}/cardid`);
+    await ref.on("value", function(snapshot) {
+      console.log(snapshot.val());
+      let graduateCardId = snapshot.val();
+      console.log(graduateCardId);
+      return graduateCardId;
+    }, function (errorObject) {
+      console.log("The read failed: " + errorObject.code);
+      throw errorObject;
+    });
+  } catch(error) {
+    throw error;
+  }
+}
+
+async function createUniversityFirebase(cardId, universityRut,shortName, fullName, email) {
+  console.log("en firebase")
+  try {
+    let userDetails = await admin.auth().createUser({
+      email: email,
+      password: "master",
+      displayName: `${shortName}`
+    });
+    let uid = userDetails.uid;
+    var db = admin.database();
+    //res.send(uuidv1());
+    var refUid = db.ref('universities/uid/' + uid);
+    var refRut = db.ref('universities/rut/' + universityRut);
+    
+    const afterRefUid = await refUid.set({
+      "cardid": cardId,
+      "email": email,
+      "shortName": shortName,
+      "fullName" : fullName,
+      "rut": universityRut
+    });
+    const afterRefRut = await refRut.set({
+      "cardid": cardId,
+      "email": email,
+      "shortName": shortName,
+      "fullName" : fullName,
+      "uid": uid
+    })
+    console.log(afterRefUid);
+    console.log(afterRefRut);
+    console.log(`userDetails: ${userDetails.uid}`);
+    console.log("lo hizo");
+    
+    return true
+  } catch(err) {
+    console.log("tirando error")
+    throw err;
+  }
+}
+
+async function createUserFirebase(email, firstName, lastName, cardId, graduateRut) {
   console.log("en firebase")
   try {
     let userDetails = await admin.auth().createUser({
@@ -38,14 +97,28 @@ async function createUserFirebase(email, firstName, lastName, cardId) {
     let uid = userDetails.uid;
     var db = admin.database();
     //res.send(uuidv1());
-    var ref = db.ref('users/' + uid);
-    /*
-    await ref.set({
-      "cardid": cardId
+    var refUid = db.ref('users/uid/' + uid);
+    var refRut = db.ref('users/rut/' + graduateRut);
+    
+    const afterRefUid = await refUid.set({
+      "cardid": cardId,
+      "email": email,
+      "firstName": firstName,
+      "lastName" : lastName,
+      "rut": graduateRut
+    });
+    const afterRefRut = await refRut.set({
+      "cardid": cardId,
+      "email": email,
+      "firstName": firstName,
+      "lastName" : lastName,
+      "uid": uid
     })
+    console.log(afterRefUid);
+    console.log(afterRefRut);
     console.log(`userDetails: ${userDetails.uid}`);
     console.log("lo hizo");
-    */
+    
     return true
   } catch(err) {
     console.log("tirando error")
@@ -53,6 +126,7 @@ async function createUserFirebase(email, firstName, lastName, cardId) {
   }
 }
 
+//ESTA FUNCIÓN SIRVE PARA CHEQUEAR TODOS LOS USUARIOS Y NO SOLO LOS GRADUADOS
 async function userExistFirebase(email) {
   try {
     let checkUser = await admin.auth().getUserByEmail(email);
@@ -68,21 +142,23 @@ async function userExistFirebase(email) {
     }
     
   }
-  //let checkUser = await admin.auth().getUserByEmail(email);
-  //console.log(`user: ${checkUser}`);
-  /*
-  console.log("dentrofirebase")
-  admin.auth().getUserByEmail(email).then(user => { 
-    // User already exists
-    console.log(`user: ${user}`)
-    return true
-  }).catch(err => { 
-    if (err.code === 'auth/user-not-found') {
-      console.log(`error user firebase: ${err}`);
-      throw err;
-    }
-  })
-  */
+}
+
+async function checkIfUniversityExists(universityRut) {
+  console.log("empieza a ejecutarse función checkIfUniversityExists")
+
+  businessNetworkConnection = new BusinessNetworkConnection();
+    await businessNetworkConnection.connect('admin@degree');
+console.log("se conecta con la tarjeta admin")
+    //get the factory for the business network
+    factory = businessNetworkConnection.getBusinessNetwork().getFactory();
+    //add graduate participant
+    const participantRegistry = await businessNetworkConnection.getParticipantRegistry(namespace + '.University');
+    console.log("se crea participantRegistry")
+    const check = await participantRegistry.exists(graduateRut);
+    console.log("se crea variable boolean para ver si usuario existe:");
+    console.log(check);
+    return check;
 }
 
 async function checkIfUserExists(graduateRut) {
@@ -298,7 +374,104 @@ module.exports = {
 
   },
 
+  registerUniversityInBlockchainAndFirebase: async function (cardId, universityRut,shortName, fullName, email) {
+    try {
+      let checkFirebase = await userExistFirebase(email);
+      console.log(checkFirebase)
+      let checkBlockchain = await checkIfUniversityExists(universityRut);
+
+      console.log("Termina de ejecturarse función checkIfUserExists() y comienza el if statement de check y userFirebase")
+
+    //if (check != true && userFirebase != true) {
+    if (checkBlockchain != true && checkFirebase != true) {
+    //if user does not exist
+    //add graduate participant;
+    console.log("No está registrado ni en la blockchain ni en firebase");
+    await createUniversityFirebase(cardId, universityRut,shortName, fullName, email);
+    //console.log("Si check es != de true y empieza a ejecutarse función this.registerGraduate")
+    await this.registerUniversity(cardId, universityRut,shortName, fullName, email);
+    console.log("Comienza a ejecutarse función this.createRegistry")
+
+    return true;
+    } else if (checkBlockchain != false && checkFirebase != true) {
+      console.log("if checkBlockchain != false && checkFirebase != true")
+      await createUniversityFirebase(cardId, universityRut,shortName, fullName, email);
+      console.log("dp de crear universidad en firebase");
+
+      return true;
+    } else if (checkBlockchain != true && checkFirebase != false) {
+      console.log("if if checkBlockchain != true && checkFirebase != false")
+      await this.registerUniversity(cardId, universityRut,shortName, fullName, email);
+      console.log("dp de crear universidad blockchain");
+      return true;
+    }
+    else {
+      console.log("todo ok");
+      
+    return true;
+    }
+    } catch(err) {
+      //print and return error
+      console.log(`error en createandregister: ${error}`);
+      console.log(err);
+      console.log("EORR")
+      var error = {};
+      error.error = err.message;
+      return error;
+    }
+  },
+
     /*
+    * Create University participant and import card for identity
+    * @param {String} cardId Import card id for university
+    * @param {String} universityRut University account number as identifier on network
+    * @param {String} shortName University short name
+    * @param {String} fullName University short name
+    * @param {String} email University email
+    */
+   onlyRegisterUniversity: async function (cardId, universityRut,shortName, fullName, email) {
+    try {
+
+      //connect as admin
+      businessNetworkConnection = new BusinessNetworkConnection();
+      await businessNetworkConnection.connect('admin@degree');
+
+      //get the factory for the business network
+      factory = businessNetworkConnection.getBusinessNetwork().getFactory();
+
+      //create university participant
+      const university = factory.newResource(namespace, 'University', universityRut);
+      university.shortName = shortName;
+      university.fullName = fullName;
+      university.email = email;
+      
+
+      //add university participant
+      const participantRegistry = await businessNetworkConnection.getParticipantRegistry(namespace + '.University');
+      await participantRegistry.add(university);
+
+      //issue identity
+      const identity = await businessNetworkConnection.issueIdentity(namespace + '.University#' + universityRut, cardId);
+
+      //import card for identity
+      await importCardForIdentity(cardId, identity);
+
+      //disconnect
+      await businessNetworkConnection.disconnect('admin@degree');
+
+      return true;
+    }
+    catch(err) {
+      //print and return error
+      console.log(err);
+      var error = {};
+      error.error = err.message;
+      return error;
+    }
+
+  },
+
+      /*
     * Create University participant and import card for identity
     * @param {String} cardId Import card id for university
     * @param {String} universityRut University account number as identifier on network
@@ -339,11 +512,7 @@ module.exports = {
       return true;
     }
     catch(err) {
-      //print and return error
-      console.log(err);
-      var error = {};
-      error.error = err.message;
-      return error;
+      throw error
     }
 
   },
@@ -749,16 +918,21 @@ module.exports = {
 
 createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName, email, phoneNumber, degreeId, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, cardIdUni) {
   try {
+
+    //PARA PROBAR FUNCIONES NUEVAS EL PRIMER PÁRRAFO! NO OLVIDAR COMENTARLAS AL TERMINAR
     
+    //await getGraduateCardId(graduateRut);
+    //ERROOOOOR PARA PROBAR AQUI!
+    //let userFirebase = await createUserFirebase(email, firstName, lastName, cardId, graduateRut);
+    //console.log(`userFire: ${userFirebase}`);
 
 
-    //let userFirebase = await createUserFirebase(email);
-    //console.log(`userFire: ${userFirebase}`)
     //Check if user exist
     console.log("antes de firebase")
     let checkFirebase = await userExistFirebase(email);
     console.log(`dsadas: ${checkFirebase}`);
     console.log("dp de firebase");
+    
     //await createUserFirebase(email, firstName, lastName, cardId);
     let checkBlockchain = await checkIfUserExists(graduateRut);
     
