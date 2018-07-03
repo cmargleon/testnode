@@ -97,10 +97,10 @@ async function createUserFirebase(email, firstName, lastName, cardId, graduateRu
     let uid = userDetails.uid;
     var db = admin.database();
 
-    let ruut = graduateRut;
+    //let ruut = graduateRut;
     //res.send(uuidv1());
     var refUid = db.ref('users/uid/' + uid);
-    var refRut = db.ref('users/rut/' + cardId);
+    var refRut = db.ref('users/rut/' + graduateRut);
 
     console.log(cardId, email, firstName, lastName, graduateRut, uid);
 
@@ -109,15 +109,15 @@ async function createUserFirebase(email, firstName, lastName, cardId, graduateRu
       "email": email,
       "firstName": firstName,
       "lastName" : lastName,
-      "rut": ruut
+      "rut": graduateRut
     };
     console.log(kkkk);
     console.log("antes de primer ref")
     const afterRefUid = await refUid.set({
-      "cardid": "cardId",
-      "email": "aaaa@aaa.com",
-      "firstName": "firstName",
-      "lastName" : "lastName",
+      "cardid": cardId,
+      "email": email,
+      "firstName": firstName,
+      "lastName" : lastName,
       "rut": graduateRut
     });
     console.log("antes de seg ref")
@@ -959,7 +959,7 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
     //if user does not exist
     //add graduate participant;
     console.log("No está registrado ni en la blockchain ni en firebase");
-    await createUserFirebase(email, firstName, lastName, cardId);
+    await createUserFirebase(email, firstName, lastName, cardId, graduateRut);
     //console.log("Si check es != de true y empieza a ejecutarse función this.registerGraduate")
     await this.registerGraduate(cardId, graduateRut,firstName, lastName, email, phoneNumber);
     console.log("Comienza a ejecutarse función this.createRegistry")
@@ -969,7 +969,7 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
     return true;
     } else if (checkBlockchain != false && checkFirebase != true) {
       console.log("if checkBlockchain != false && checkFirebase != true")
-      await createUserFirebase(email, firstName, lastName, cardId);
+      await createUserFirebase(email, firstName, lastName, cardId, graduateRut);
       console.log("dp de crear usuario firebase");
       await this.createRegistry(cardIdUni, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa);
       console.log("dp de crear registro");
