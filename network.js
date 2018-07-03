@@ -100,7 +100,7 @@ async function createUserFirebase(email, firstName, lastName, cardId, graduateRu
     let ruut = graduateRut;
     //res.send(uuidv1());
     var refUid = db.ref('users/uid/' + uid);
-    var refRut = db.ref('users/rut/' + graduateRut);
+    var refRut = db.ref('users/rut/' + cardId);
 
     console.log(cardId, email, firstName, lastName, graduateRut, uid);
 
