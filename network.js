@@ -155,7 +155,7 @@ console.log("se conecta con la tarjeta admin")
     //add graduate participant
     const participantRegistry = await businessNetworkConnection.getParticipantRegistry(namespace + '.University');
     console.log("se crea participantRegistry")
-    const check = await participantRegistry.exists(graduateRut);
+    const check = await participantRegistry.exists(universityRut);
     console.log("se crea variable boolean para ver si usuario existe:");
     console.log(check);
     return check;
