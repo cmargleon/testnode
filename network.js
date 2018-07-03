@@ -99,6 +99,8 @@ async function createUserFirebase(email, firstName, lastName, cardId, graduateRu
     //res.send(uuidv1());
     var refUid = db.ref('users/uid/' + uid);
     var refRut = db.ref('users/rut/' + graduateRut);
+
+    console.log(cardId, email, firstName, lastName, graduateRut, uid)
     
     const afterRefUid = await refUid.set({
       "cardid": cardId,
@@ -130,7 +132,7 @@ async function createUserFirebase(email, firstName, lastName, cardId, graduateRu
 async function userExistFirebase(email) {
   try {
     let checkUser = await admin.auth().getUserByEmail(email);
-  console.log(`user: ${checkUser}`);
+  console.log(`user: ${JSON.stringify(checkUser)}`);
   return true;
   } catch(error) {
     if (error.code === 'auth/user-not-found') {
