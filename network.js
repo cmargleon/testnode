@@ -109,7 +109,7 @@ async function createUserFirebase(email, firstName, lastName, cardId, graduateRu
       "email": email,
       "firstName": firstName,
       "lastName" : lastName,
-      "rut": graduateRut
+      "rut": ruut
     };
     console.log(kkkk);
     console.log("antes de primer ref")
@@ -118,7 +118,7 @@ async function createUserFirebase(email, firstName, lastName, cardId, graduateRu
       "email": email,
       "firstName": firstName,
       "lastName" : lastName,
-      "rut": graduateRut
+      "rut": ruut
     });
     console.log("antes de seg ref")
     const afterRefRut = await refRut.set({
