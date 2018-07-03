@@ -114,8 +114,8 @@ async function createUserFirebase(email, firstName, lastName, cardId, graduateRu
     console.log(kkkk);
     console.log("antes de primer ref")
     const afterRefUid = await refUid.set({
-      "cardid": cardId,
-      "email": email,
+      "cardid": "cardId",
+      "email": "aaaa@aaa.com",
       "firstName": firstName,
       "lastName" : lastName,
       "rut": ruut
