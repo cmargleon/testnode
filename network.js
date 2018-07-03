@@ -118,7 +118,7 @@ async function createUserFirebase(email, firstName, lastName, cardId, graduateRu
       "email": "aaaa@aaa.com",
       "firstName": "firstName",
       "lastName" : "lastName",
-      "rut": "ruut"
+      "rut": graduateRut
     });
     console.log("antes de seg ref")
     const afterRefRut = await refRut.set({
