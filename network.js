@@ -933,7 +933,7 @@ module.exports = {
 //FUNCIÓN PARA CREAR USUARIO Y REGISTRO DE TITULO AL MISMO TIEMPO
 //SOLO PARA SER UTILIZADO POR UNIVERSIDADES
 
-createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName, email, phoneNumber, degreeId, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, cardIdUni, registryCreator, universityRut) {
+createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName, email, phoneNumber, degreeId, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, cardIdUni, registryCreator) {
   try {
 
     //PARA PROBAR FUNCIONES NUEVAS EL PRIMER PÁRRAFO! NO OLVIDAR COMENTARLAS AL TERMINAR
