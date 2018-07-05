@@ -622,8 +622,9 @@ module.exports = {
   * @param {String} cardId Card id to connect to network
   * @param {String} universityRut Account number of university
   */
- universityData: async function (cardId, universityRut) {
+ universityData: async function (cardId, registryCreator) {
   console.log(`rut: ${universityRut}`)
+  let universityRut = registryCreator;
   try {
 
     //connect to network with cardId
@@ -932,7 +933,7 @@ module.exports = {
 //FUNCIÓN PARA CREAR USUARIO Y REGISTRO DE TITULO AL MISMO TIEMPO
 //SOLO PARA SER UTILIZADO POR UNIVERSIDADES
 
-createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName, email, phoneNumber, degreeId, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, cardIdUni, registryCreator) {
+createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName, email, phoneNumber, degreeId, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, cardIdUni, registryCreator, universityRut) {
   try {
 
     //PARA PROBAR FUNCIONES NUEVAS EL PRIMER PÁRRAFO! NO OLVIDAR COMENTARLAS AL TERMINAR
@@ -952,6 +953,11 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
     //await createUserFirebase(email, firstName, lastName, cardId);
     let checkBlockchain = await checkIfUserExists(graduateRut);
     
+    //getUniversityName
+    let universityInfo = await this.universityData(cardId, registryCreator);
+    console.log(universityInfo);
+    let universityName = universityInfo.fullName;
+        
 
     console.log("Termina de ejecturarse función checkIfUserExists() y comienza el if statement de check y userFirebase")
 
@@ -965,27 +971,27 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
     await this.registerGraduate(cardId, graduateRut,firstName, lastName, email, phoneNumber);
     console.log("Comienza a ejecutarse función this.createRegistry")
     //create registry
-    await this.createRegistry(cardIdUni, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, registryCreator);
+    await this.createRegistry(cardIdUni, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, universityName);
     console.log("Usuario y registro creado")
     return true;
     } else if (checkBlockchain != false && checkFirebase != true) {
       console.log("if checkBlockchain != false && checkFirebase != true")
       await createUserFirebase(email, firstName, lastName, cardId, graduateRut);
       console.log("dp de crear usuario firebase");
-      await this.createRegistry(cardIdUni, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, registryCreator);
+      await this.createRegistry(cardIdUni, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, universityName);
       console.log("dp de crear registro");
       return true;
     } else if (checkBlockchain != true && checkFirebase != false) {
       console.log("if if checkBlockchain != true && checkFirebase != false")
       await this.registerGraduate(cardId, graduateRut,firstName, lastName, email, phoneNumber);
       console.log("dp de crear usuario blockchain");
-      await this.createRegistry(cardIdUni, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, registryCreator);
+      await this.createRegistry(cardIdUni, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, universityName);
       console.log("dp de crear registro");
       return true;
     }
     else {
       console.log("dentro del else y comienza a ejecutarse this.createRegistry")
-    await this.createRegistry(cardIdUni, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, registryCreator);
+    await this.createRegistry(cardIdUni, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, universityName);
     console.log("Usuario ya existe. Sólo se crea registro")
     return true;
     }
