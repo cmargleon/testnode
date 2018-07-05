@@ -623,7 +623,7 @@ module.exports = {
   * @param {String} universityRut Account number of university
   */
  universityData: async function (cardId, registryCreator) {
-  console.log(`rut: ${universityRut}`)
+  //console.log(`rut: ${universityRut}`)
   let universityRut = registryCreator;
   try {
 
