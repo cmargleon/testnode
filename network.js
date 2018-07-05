@@ -622,21 +622,22 @@ module.exports = {
   * @param {String} cardId Card id to connect to network
   * @param {String} universityRut Account number of university
   */
- universityData: async function (cardId, registryCreator) {
-  console.log(`rut: ${universityRut}`)
+ universityData: async function (cardIdUni, registryCreator) {
+  console.log(`rut: ${registryCreator}`);
+  console.log(`cardiduni: ${cardIdUni}`)
   let universityRut = registryCreator;
   try {
-
+    console.log("inside university data")
     //connect to network with cardId
     businessNetworkConnection = new BusinessNetworkConnection();
-    await businessNetworkConnection.connect(cardId);
-
+    await businessNetworkConnection.connect(cardIdUni);
+    console.log("se conectó")
     //get university from the network
     const universityRegistry = await businessNetworkConnection.getParticipantRegistry(namespace + '.University');
     const university = await universityRegistry.get(universityRut);
 
     //disconnect
-    await businessNetworkConnection.disconnect(cardId);
+    await businessNetworkConnection.disconnect(cardIdUni);
     
 
     //return university object
@@ -954,7 +955,7 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
     let checkBlockchain = await checkIfUserExists(graduateRut);
     
     //getUniversityName
-    let universityInfo = await this.universityData(cardId, registryCreator);
+    let universityInfo = await this.universityData(cardIdUni, registryCreator);
     console.log(universityInfo);
     let universityName = universityInfo.fullName;
         
