@@ -695,7 +695,7 @@ module.exports = {
   * @param {String} partnerId Partner Id of partner
   * @param {Integer} points Points value
   */
- createRegistry: async function (cardId, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, registryCreator) {
+ createRegistry: async function (cardId, degreeId, graduateRut, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, universityName) {
   console.log("Comienza a ejecutarse createRegistry")
   try {
 
@@ -731,7 +731,7 @@ module.exports = {
     degree2.startYear = startYear;
     degree2.gradYear = gradYear;
     degree2.gpa = gpa;
-    degree2.university = registryCreator;
+    degree2.university = universityName;
     console.log("Antes de añadir registros")
     const degree = await degreesRegistry.addAll([degree2])
     console.log("registro creado")
