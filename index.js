@@ -391,9 +391,10 @@ app.post('/api/createuserandregistry', function(req, res){
   var email = req.body.email;
   var phoneNumber = req.body.phonenumber;
   var cardIdUni = req.body.cardiduni;
+  var registryCreator = req.body.universityrut;
   console.log("Antes de llamar a la función createUserAndRegistry en network")
 
-  network.createUserAndRegistry(cardId, graduateRut, firstName, lastName, email, phoneNumber, degreeId, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, cardIdUni)
+  network.createUserAndRegistry(cardId, graduateRut, firstName, lastName, email, phoneNumber, degreeId, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, cardIdUni, registryCreator)
   .then((result) => {
     console.log(`result: ${result}`)
     //return error if error in response
