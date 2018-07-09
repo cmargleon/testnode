@@ -931,6 +931,29 @@ module.exports = {
   }
 },
 
+queryAllRegistriesUniversities : async function (cardId) {
+  try {
+    businessNetworkConnection = new BusinessNetworkConnection();
+    await businessNetworkConnection.connect(cardId);
+
+    //query all partners from the network
+    const allRegistries = await businessNetworkConnection.query('getAllDegrees');
+
+    //disconnect
+    await businessNetworkConnection.disconnect(cardId);
+
+    console.log(`egistries: ${allRegistries}`)
+
+    //return allPartners object
+    return allRegistries;
+  } catch(err) {
+    console.log(err);
+    var error = {};
+    error.error = err.message;
+    return error
+  }
+},
+
 //FUNCIÓN PARA CREAR USUARIO Y REGISTRO DE TITULO AL MISMO TIEMPO
 //SOLO PARA SER UTILIZADO POR UNIVERSIDADES
 

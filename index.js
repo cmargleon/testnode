@@ -391,6 +391,29 @@ app.post('/api/queryfullregistry', function(req, res){
   })
 });
 
+app.post('/api/queryRegistriesUniversity', function(req, res) {
+  let cardId = req.body.cardid;
+  network.queryAllRegistriesUniversities(cardId)
+  .then((result) => {
+    console.log(`result: ${result}`)
+    //return error if error in response
+    if (result.error != null) {
+        console.log("ERROR AL FINALS!!!")
+      res.json({
+        error: result.error
+      });
+    } else {
+      console.log("todo ok")
+      //returnData.points = member.points; REVISAR ESTO!!!!!!
+      //console.log(`returndata: ${returnData}`);
+      res.json({
+        success: result
+    });
+    }
+
+  })
+})
+
 app.post('/api/createuserandregistry', function(req, res){
   var degreeId = uuidv1();
   var graduateRut = req.body.graduaterut;
