@@ -430,7 +430,8 @@ app.post('/api/createuserandregistry', function(req, res){
   var phoneNumber = req.body.phonenumber;
   var registryCreator = req.body.universityrut;
   var uid = req.body.uid
-  console.log("Antes de llamar a la función createUserAndRegistry en network")
+  console.log("Antes de llamar a la función createUserAndRegistry en network");
+  console.log(uid)
 
   network.createUserAndRegistry(cardId, graduateRut, firstName, lastName, email, phoneNumber, degreeId, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, registryCreator, uid)
   .then((result) => {

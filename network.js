@@ -51,15 +51,37 @@ async function getUniversityCardId(uid) {
   try {
     var db = admin.database();
     var ref = db.ref(`/universities/uid/${uid}/cardid`);
+    console.log(ref)
+    console.log("antes de tratar")
     await ref.on("value", function(snapshot) {
       console.log(snapshot.val());
       let universityCardId = snapshot.val();
       console.log(universityCardId);
+      console.log("aqui2")
       return universityCardId;
     }, function (errorObject) {
       console.log("The read failed: " + errorObject.code);
       throw errorObject;
     });
+    console.log("aaaa")
+    return universityCardId;
+  } catch(error) {
+    throw error;
+  }
+}
+
+async function getUniversityCardId2(uid) {
+  console.log("en get university card id")
+  try {
+    var db = admin.database();
+    var ref = db.ref(`/universities/uid/${uid}/cardid`);
+    //console.log(ref)
+    console.log("antes de tratar")
+
+    const cardId = await ref.once("value");
+    console.log(cardId.val());
+    
+    return cardId.val();
   } catch(error) {
     throw error;
   }
@@ -998,7 +1020,8 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
     //console.log(`userFire: ${userFirebase}`);
     
     //get universityCardId;
-    let cardIdUni = await getUniversityCardId(uid)
+    let cardIdUni = await getUniversityCardId2(uid);
+    console.log(cardIdUni)
 
     //Check if user exist
     console.log("antes de firebase")
