@@ -95,7 +95,6 @@ async function getUniversityRut(uid) {
     console.log("antes de tratar")
 
     const universityRut = await ref.once("value");
-    console.log(cardId.val());
     
     return universityRut.val();
   } catch(error) {
@@ -1040,7 +1039,10 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
     
     //get universityCardId;
     let cardIdUni = await getUniversityCardId2(uid);
-    console.log(cardIdUni)
+    console.log(cardIdUni);
+
+    let uniRut = await getUniversityRut(uid);
+    console.log(uniRut)
 
     //Check if user exist
     console.log("antes de firebase")
@@ -1052,10 +1054,10 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
     let checkBlockchain = await checkIfUserExists(graduateRut);
     
     //getUniversityName
-    let universityInfo = await this.universityData(cardIdUni, registryCreator);
+    let universityInfo = await this.universityData(cardIdUni, uniRut);
     console.log(universityInfo);
-    //let universityRut = universityInfo.universityRut;
-    let universityRut = "170000000";
+    let universityRut = universityInfo.universityRut;
+    //let universityRut = "170000000";
         
 
     console.log("Termina de ejecturarse función checkIfUserExists() y comienza el if statement de check y userFirebase")
