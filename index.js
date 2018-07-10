@@ -117,7 +117,7 @@ app.post('/api/registerUniversity', function(req, res) {
   console.log(`uni: ${req.body.universityRut}`)
     console.log("Creando cuenta universidad");
     var universityRut = req.body.universityrut;
-    var cardId = req.body.cardid;
+    var cardId = uuidv1();
     var shortName = req.body.shortname;
     var fullName = req.body.fullname;
     var email = req.body.email;
@@ -428,11 +428,11 @@ app.post('/api/createuserandregistry', function(req, res){
   var lastName = req.body.lastname;
   var email = req.body.email;
   var phoneNumber = req.body.phonenumber;
-  var cardIdUni = req.body.cardiduni;
   var registryCreator = req.body.universityrut;
+  var uid = req.body.uid
   console.log("Antes de llamar a la función createUserAndRegistry en network")
 
-  network.createUserAndRegistry(cardId, graduateRut, firstName, lastName, email, phoneNumber, degreeId, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, cardIdUni, registryCreator)
+  network.createUserAndRegistry(cardId, graduateRut, firstName, lastName, email, phoneNumber, degreeId, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, registryCreator, uid)
   .then((result) => {
     console.log(`result: ${result}`)
     //return error if error in response
@@ -474,6 +474,11 @@ app.post('/uidtest', function(req,res) {
     }
 
   })
+})
+
+app.post('/universitycard', function(req,res) {
+  let uid = req.body.uid;
+  network.universityCardIdTest(uid);
 })
 
 //declare port

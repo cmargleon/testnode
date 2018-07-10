@@ -86,10 +86,6 @@ module.exports = {
         response.error = "Enter access key";
         console.log(response.error);
         return response;
-      } else if (!/^[0-9a-zA-Z]+$/.test(cardId)) {
-        response.error = "Access key can be letters and numbers only";
-        console.log(response.error);
-        return response;
       } else if (universityRut.length < 1) {
         response.error = "Enter partner id";
         console.log(response.error);

@@ -46,6 +46,25 @@ async function getGraduateCardId(graduateRut) {
   }
 }
 
+async function getUniversityCardId(uid) {
+  console.log("en get university card id")
+  try {
+    var db = admin.database();
+    var ref = db.ref(`/universities/uid/${uid}/cardid`);
+    await ref.on("value", function(snapshot) {
+      console.log(snapshot.val());
+      let universityCardId = snapshot.val();
+      console.log(universityCardId);
+      return universityCardId;
+    }, function (errorObject) {
+      console.log("The read failed: " + errorObject.code);
+      throw errorObject;
+    });
+  } catch(error) {
+    throw error;
+  }
+}
+
 async function getUidFirebase(email) {
   try {
     const userInfo = await admin.auth().getUserByEmail(email);
@@ -401,6 +420,7 @@ module.exports = {
 
   registerUniversityInBlockchainAndFirebase: async function (cardId, universityRut,shortName, fullName, email) {
     try {
+
       let checkFirebase = await userExistFirebase(email);
       console.log(checkFirebase)
       let checkBlockchain = await checkIfUniversityExists(universityRut);
@@ -967,7 +987,7 @@ queryAllRegistriesUniversities : async function (cardId) {
 //FUNCIÓN PARA CREAR USUARIO Y REGISTRO DE TITULO AL MISMO TIEMPO
 //SOLO PARA SER UTILIZADO POR UNIVERSIDADES
 
-createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName, email, phoneNumber, degreeId, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, cardIdUni, registryCreator) {
+createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName, email, phoneNumber, degreeId, owner, degreeType, degreeStatus, major, minor, startYear, gradYear, gpa, registryCreator, uid) {
   try {
 
     //PARA PROBAR FUNCIONES NUEVAS EL PRIMER PÁRRAFO! NO OLVIDAR COMENTARLAS AL TERMINAR
@@ -976,7 +996,9 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
     //ERROOOOOR PARA PROBAR AQUI!
     //let userFirebase = await createUserFirebase(email, firstName, lastName, cardId, graduateRut);
     //console.log(`userFire: ${userFirebase}`);
-
+    
+    //get universityCardId;
+    let cardIdUni = await getUniversityCardId(uid)
 
     //Check if user exist
     console.log("antes de firebase")
@@ -1047,6 +1069,20 @@ uidTest : async function (email) {
     const uid = await getUidFirebase(email);
     return uid
   } catch (err) {
+    console.log(err);
+    console.log("EORR")
+    var error = {};
+    error.error = err.message;
+    return error;
+  }
+},
+
+universityCardIdTest : async function (uid) {
+  try {
+    const cardId = await getUniversityCardId(uid);
+    console.log(cardId);
+    return cardId
+  } catch(err) {
     console.log(err);
     console.log("EORR")
     var error = {};
