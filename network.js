@@ -46,6 +46,16 @@ async function getGraduateCardId(graduateRut) {
   }
 }
 
+async function getUidFirebase(email) {
+  try {
+    const userInfo = await admin.auth().getUserByEmail(email);
+    let uid = userInfo.uid;
+    return uid;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function createUniversityFirebase(cardId, universityRut,shortName, fullName, email) {
   console.log("en firebase")
   try {
@@ -1031,6 +1041,19 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
     return error;
   }
 },
+
+uidTest : async function (email) {
+  try {
+    const uid = await getUidFirebase(email);
+    return uid
+  } catch (err) {
+    console.log(err);
+    console.log("EORR")
+    var error = {};
+    error.error = err.message;
+    return error;
+  }
+}
 
 
     //AGREGAR MAS FUNCIONES AQUI!

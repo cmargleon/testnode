@@ -453,6 +453,29 @@ app.post('/api/createuserandregistry', function(req, res){
   })
 })
 
+app.post('/uidtest', function(req,res) {
+  let email = req.body.email
+  network.uidTest(email)
+  .then((result) => {
+    console.log(`result: ${result}`)
+    //return error if error in response
+    if (result.error != null) {
+        console.log("ERROR AL FINALS!!!")
+      res.json({
+        error: result.error
+      });
+    } else {
+      console.log("todo ok")
+      //returnData.points = member.points; REVISAR ESTO!!!!!!
+      //console.log(`returndata: ${returnData}`);
+      res.json({
+        success: result
+    });
+    }
+
+  })
+})
+
 //declare port
 var port = process.env.PORT || 8000;
 if (process.env.VCAP_APPLICATION) {
