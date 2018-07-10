@@ -87,6 +87,22 @@ async function getUniversityCardId2(uid) {
   }
 }
 
+async function getUniversityRut(uid) {
+  try {
+    var db = admin.database();
+    var ref = db.ref(`/universities/uid/${uid}/rut`);
+    //console.log(ref)
+    console.log("antes de tratar")
+
+    const universityRut = await ref.once("value");
+    console.log(cardId.val());
+    
+    return universityRut.val();
+  } catch(error) {
+    throw error;
+  }
+}
+
 async function getUidFirebase(email) {
   try {
     const userInfo = await admin.auth().getUserByEmail(email);
@@ -674,10 +690,10 @@ module.exports = {
   * @param {String} cardId Card id to connect to network
   * @param {String} universityRut Account number of university
   */
- universityData: async function (cardIdUni, registryCreator) {
-  console.log(`rut: ${registryCreator}`);
+ universityData: async function (cardIdUni, universityRut) {
+  console.log(`rut: ${universityRut}`);
   console.log(`cardiduni: ${cardIdUni}`)
-  let universityRut = registryCreator;
+  let universityRut = universityRut;
   try {
     console.log("inside university data")
     //connect to network with cardId
@@ -1024,7 +1040,10 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
     
     //get universityCardId;
     let cardIdUni = await getUniversityCardId2(uid);
-    console.log(cardIdUni)
+    console.log(cardIdUni);
+
+    //get universityRut
+    let universityRut = await getUniversityRut(uid)
 
     //Check if user exist
     console.log("antes de firebase")
@@ -1036,7 +1055,7 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
     let checkBlockchain = await checkIfUserExists(graduateRut);
     
     //getUniversityName
-    let universityInfo = await this.universityData(cardIdUni, registryCreator);
+    let universityInfo = await this.universityData(cardIdUni, universityRut);
     console.log(universityInfo);
     //let universityRut = universityInfo.universityRut;
     let universityRut = "170000000";
