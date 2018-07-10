@@ -1035,7 +1035,7 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
     //getUniversityName
     let universityInfo = await this.universityData(cardIdUni, registryCreator);
     console.log(universityInfo);
-    let universityRut = universityInfo.universityRut;
+    let universityRut = "170000000";
         
 
     console.log("Termina de ejecturarse función checkIfUserExists() y comienza el if statement de check y userFirebase")
