@@ -697,11 +697,14 @@ module.exports = {
   }
   catch(err) {
     //print and return error
+    /*
     console.log(err);
     console.log("EORR")
     var error = {};
     error.error = err.message;
     return error;
+    */
+   throw err
   }
 
 },
@@ -1035,6 +1038,7 @@ createUserAndRegistry: async function (cardId, graduateRut, firstName, lastName,
     //getUniversityName
     let universityInfo = await this.universityData(cardIdUni, registryCreator);
     console.log(universityInfo);
+    //let universityRut = universityInfo.universityRut;
     let universityRut = "170000000";
         
 
