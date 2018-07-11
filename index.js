@@ -392,8 +392,8 @@ app.post('/api/queryfullregistry', function(req, res){
 });
 
 app.post('/api/queryRegistriesUniversity', function(req, res) {
-  let cardId = req.body.cardid;
-  network.queryAllRegistriesUniversities(cardId)
+  let uid = req.body.uid;
+  network.queryAllRegistriesUniversities(uid)
   .then((result) => {
     console.log(`result: ${result}`)
     //return error if error in response

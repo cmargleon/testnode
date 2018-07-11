@@ -1001,16 +1001,22 @@ module.exports = {
   }
 },
 
-queryAllRegistriesUniversities : async function (cardId) {
+queryAllRegistriesUniversities : async function (uid) {
   try {
+
+    //get universityCardId;
+    let cardIdUni = await getUniversityCardId2(uid);
+    console.log(cardIdUni);
+
+
     businessNetworkConnection = new BusinessNetworkConnection();
-    await businessNetworkConnection.connect(cardId);
+    await businessNetworkConnection.connect(cardIdUni);
 
     //query all partners from the network
     const allRegistries = await businessNetworkConnection.query('getAllDegrees');
 
     //disconnect
-    await businessNetworkConnection.disconnect(cardId);
+    await businessNetworkConnection.disconnect(cardIdUni);
 
     console.log(`egistries: ${allRegistries}`)
 
