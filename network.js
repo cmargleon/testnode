@@ -1144,7 +1144,7 @@ universityCardIdTest : async function (uid) {
 
 queryDegreeById : async function (degreeId, uid) {
   try {
-    let cardIdUni = await getUniversityCardId(uid);
+    let cardIdUni = await getUniversityCardId2(uid);
     console.log(cardIdUni);
     console.log("antes de degree")
     //query all partners from the network
