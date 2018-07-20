@@ -1148,6 +1148,10 @@ queryDegreeById : async function (degreeId, uid) {
     console.log(cardIdUni);
     console.log("antes de degree")
     //query all partners from the network;
+
+    businessNetworkConnection = new BusinessNetworkConnection();
+    await businessNetworkConnection.connect(cardIdUni);
+    
     console.log(degreeId)
     const degree = await businessNetworkConnection.query('getDegreeById', { degreeId: degreeId});
 
