@@ -481,6 +481,7 @@ app.post('/uidtest', function(req,res) {
 app.post('/api/querydegreesbyid', function (req,res) {
   let degreeId = req.body.degreeId;
   let uid = req.body.uid
+  console.log(degreeId, uid)
   network.queryDegreeById(degreeId, uid)
   .then((result) => {
     console.log(`result: ${result}`)

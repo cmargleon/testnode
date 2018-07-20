@@ -71,7 +71,7 @@ async function getUniversityCardId(uid) {
 }
 
 async function getUniversityCardId2(uid) {
-  console.log("en get university card id")
+  console.log("en get university card id1")
   try {
     var db = admin.database();
     var ref = db.ref(`/universities/uid/${uid}/cardid`);
@@ -1144,9 +1144,9 @@ universityCardIdTest : async function (uid) {
 
 queryDegreeById : async function (degreeId, uid) {
   try {
-    let cardIdUni = await getUniversityCardId2(uid);
+    let cardIdUni = await getUniversityCardId(uid);
     console.log(cardIdUni);
-
+    console.log("antes de degree")
     //query all partners from the network
     const degree = await businessNetworkConnection.query('getDegreeById', { degreeId: degreeId});
 
