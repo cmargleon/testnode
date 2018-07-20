@@ -1140,6 +1140,31 @@ universityCardIdTest : async function (uid) {
     error.error = err.message;
     return error;
   }
+},
+
+queryDegreeById : async function (degreeId, uid) {
+  try {
+    let cardIdUni = await getUniversityCardId2(uid);
+    console.log(cardIdUni);
+
+    //query all partners from the network
+    const degree = await businessNetworkConnection.query('getDegreeById', { degreeId: degreeId});
+
+    //disconnect
+    await businessNetworkConnection.disconnect(cardIdUni);
+
+    console.log(`degree: ${degree}`)
+
+    //return allPartners object
+    return degree;
+
+  } catch(err) {
+    console.log(err);
+    console.log("EORR")
+    var error = {};
+    error.error = err.message;
+    return error;
+  }
 }
 
 

@@ -393,6 +393,7 @@ app.post('/api/queryfullregistry', function(req, res){
 
 app.post('/api/queryRegistriesUniversity', function(req, res) {
   let uid = req.body.uid;
+  console.log(`uid: ${uid}`)
   network.queryAllRegistriesUniversities(uid)
   .then((result) => {
     console.log(`result: ${result}`)
@@ -475,6 +476,12 @@ app.post('/uidtest', function(req,res) {
     }
 
   })
+})
+
+app.post('/api/querydegreesbyid', function (req,res) {
+  let degreeId = req.body.degreeId;
+  let uid = req.body.uid
+  network.queryDegreeById(degreeId, uid)
 })
 
 app.post('/universitycard', function(req,res) {
