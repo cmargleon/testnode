@@ -482,6 +482,24 @@ app.post('/api/querydegreesbyid', function (req,res) {
   let degreeId = req.body.degreeId;
   let uid = req.body.uid
   network.queryDegreeById(degreeId, uid)
+  .then((result) => {
+    console.log(`result: ${result}`)
+    //return error if error in response
+    if (result.error != null) {
+        console.log("ERROR AL FINALS!!!")
+      res.json({
+        error: result.error
+      });
+    } else {
+      console.log("todo ok")
+      //returnData.points = member.points; REVISAR ESTO!!!!!!
+      //console.log(`returndata: ${returnData}`);
+      res.json({
+        success: result
+    });
+    }
+
+  })
 })
 
 app.post('/universitycard', function(req,res) {
