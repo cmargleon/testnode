@@ -495,9 +495,7 @@ app.post('/api/querydegreesbyid', function (req,res) {
       console.log("todo ok")
       //returnData.points = member.points; REVISAR ESTO!!!!!!
       //console.log(`returndata: ${returnData}`);
-      res.json({
-        success: result
-    });
+      res.send(result);
     }
 
   })
