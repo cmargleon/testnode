@@ -1180,20 +1180,13 @@ updateDegreeData: async function (degreeId, updateData, uid) {
   await businessNetworkConnection.connect(cardIdUni);
 
   degreesRegistry = await businessNetworkConnection.getAssetRegistry(namespace + '.Degree');
-  let degree = degreesRegistry.get(degreeId);
+  let degree = await degreesRegistry.get(degreeId);
   degree.degreeStatus = updateData;
 
-  degreesRegistry.update(degreeId);
+  await degreesRegistry.update(degree);
 
   return degree
-  //console.log("create degreesRegistry");
-  //factory = businessNetworkDefinition.getFactory();
 
-  //degreesRegistry.update()
-
-  
-
-    //let degree2 = factory.newResource(namespace, 'Degree', degreeId);
 }
 
 
