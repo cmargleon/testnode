@@ -1183,7 +1183,7 @@ updateDegreeData: async function (degreeId, updateData, uid) {
   let degree = degreesRegistry.get(degreeId);
   degree.degreeStatus = updateData;
 
-  let degreeUpdated = degreesRegistry.update(degreeId);
+  let degreeUpdated = degreesRegistry.update(degree);
 
   return degreeUpdated
   //console.log("create degreesRegistry");
