@@ -501,7 +501,7 @@ app.post('/api/querydegreesbyid', function (req,res) {
   })
 });
 
-app.post('/updateDegreeData', function(req, res) {
+app.post('/api/updateDegreeData', function(req, res) {
   let degreeId = req.body.degreeId;
   let updateData = req.body.updateData;
   let uid = req.body.uid;
