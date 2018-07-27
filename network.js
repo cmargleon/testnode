@@ -1181,7 +1181,7 @@ updateDegreeData: async function (degreeId, updateData, uid) {
 
   degreesRegistry = await businessNetworkConnection.getAssetRegistry(namespace + '.Degree');
   let degree = degreesRegistry.get(degreeId);
-  degree.degreeStatus = degree.updateData;
+  degree.degreeStatus = updateData;
 
   degreesRegistry.update(degree);
 
