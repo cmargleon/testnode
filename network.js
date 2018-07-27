@@ -1183,9 +1183,9 @@ updateDegreeData: async function (degreeId, updateData, uid) {
   let degree = degreesRegistry.get(degreeId);
   degree.degreeStatus = updateData;
 
-  let degreeUpdated = degreesRegistry.update(degree);
+  degreesRegistry.update(degree);
 
-  return degreeUpdated
+  return degree
   //console.log("create degreesRegistry");
   //factory = businessNetworkDefinition.getFactory();
 
