@@ -1170,6 +1170,27 @@ queryDegreeById : async function (degreeId, uid) {
     error.error = err.message;
     return error;
   }
+},
+
+updateDegreeData: async function (degreeId, updateData, uid) {
+  let cardIdUni = await getUniversityCardId2(uid);
+  console.log(cardIdUni);
+
+  businessNetworkConnection = new BusinessNetworkConnection();
+  await businessNetworkConnection.connect(cardIdUni);
+
+  degreesRegistry = await businessNetworkConnection.getAssetRegistry(namespace + '.Degree');
+  let degree = degreesRegistry.get(degreeId);
+
+  return degree
+  //console.log("create degreesRegistry");
+  //factory = businessNetworkDefinition.getFactory();
+
+  //degreesRegistry.update()
+
+  
+
+    //let degree2 = factory.newResource(namespace, 'Degree', degreeId);
 }
 
 

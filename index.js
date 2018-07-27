@@ -499,6 +499,28 @@ app.post('/api/querydegreesbyid', function (req,res) {
     }
 
   })
+});
+
+app.post('/updateDegreeData', function(req, res) {
+  let degreeId = req.body.degreeId;
+  let updateData = req.body.updateData;
+  let uid = req.body.uid;
+  network.updateDegreeData(degreeId, updateData, uid)
+  .then((result) => {
+    console.log(`result: ${result}`)
+    //return error if error in response
+    if (result.error != null) {
+        console.log("ERROR AL FINALS!!!")
+      res.json({
+        error: result.error
+      });
+    } else {
+      console.log("todo ok")
+      //returnData.points = member.points; REVISAR ESTO!!!!!!
+      //console.log(`returndata: ${returnData}`);
+      res.send(result);
+    }
+  })
 })
 
 app.post('/universitycard', function(req,res) {
