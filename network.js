@@ -27,240 +27,66 @@ let businessNetworkConnection;
 let businessNetworkName = 'degree';
 let factory;
 
-async function getGraduateCardId(graduateRut) {
-  console.log("engetcardid")
-  try {
-    var db = admin.database();
-    var ref = db.ref(`/users/rut/${graduateRut}/cardid`);
-    await ref.on("value", function(snapshot) {
-      console.log(snapshot.val());
-      let graduateCardId = snapshot.val();
-      console.log(graduateCardId);
-      return graduateCardId;
-    }, function (errorObject) {
-      console.log("The read failed: " + errorObject.code);
-      throw errorObject;
-    });
-  } catch(error) {
-    throw error;
+let connectionProfile =  {
+  "name": "fabric-network",
+  "x-type": "hlfv1",
+  "version": "1.0.0",
+  "peers": {
+      "peer0.org1.example.com": {
+          "url": "grpc://localhost:7051",
+          "eventUrl": "grpc://localhost:7053"
+      }
+  },
+  "certificateAuthorities": {
+      "ca.org1.example.com": {
+          "url": "http://localhost:7054",
+          "caName": "ca.org1.example.com"
+      }
+  },
+  "orderers": {
+      "orderer.example.com": {
+          "url": "grpc://localhost:7050"
+      }
+  },
+  "organizations": {
+      "Org1": {
+          "mspid": "Org1MSP",
+          "peers": [
+              "peer0.org1.example.com"
+          ],
+          "certificateAuthorities": [
+              "ca.org1.example.com"
+          ]
+      }
+  },
+  "channels": {
+      "composerchannel": {
+          "orderers": [
+              "orderer.example.com"
+          ],
+          "peers": {
+              "peer0.org1.example.com": {
+                  "endorsingPeer": true,
+                  "chaincodeQuery": true,
+                  "eventSource": true
+              }
+          }
+      }
+  },
+  "client": {
+      "organization": "Org1",
+      "connection": {
+          "timeout": {
+              "peer": {
+                  "endorser": "300",
+                  "eventHub": "300",
+                  "eventReg": "300"
+              },
+              "orderer": "300"
+          }
+      }
   }
-}
-
-async function getUniversityCardId(uid) {
-  console.log("en get university card id")
-  try {
-    var db = admin.database();
-    var ref = db.ref(`/universities/uid/${uid}/cardid`);
-    console.log(ref)
-    console.log("antes de tratar")
-    await ref.on("value", function(snapshot) {
-      console.log(snapshot.val());
-      let universityCardId = snapshot.val();
-      console.log(universityCardId);
-      console.log("aqui2")
-      return universityCardId;
-    }, function (errorObject) {
-      console.log("The read failed: " + errorObject.code);
-      throw errorObject;
-    });
-    console.log("aaaa")
-    return universityCardId;
-  } catch(error) {
-    throw error;
-  }
-}
-
-async function getUniversityCardId2(uid) {
-  console.log("en get university card id1")
-  try {
-    var db = admin.database();
-    var ref = db.ref(`/universities/uid/${uid}/cardid`);
-    //console.log(ref)
-    console.log("antes de tratar")
-
-    const cardId = await ref.once("value");
-    console.log(cardId.val());
-    
-    return cardId.val();
-  } catch(error) {
-    throw error;
-  }
-}
-
-async function getUniversityRut(uid) {
-  try {
-    var db = admin.database();
-    var ref = db.ref(`/universities/uid/${uid}/rut`);
-    //console.log(ref)
-    console.log("antes de tratar")
-
-    const universityRut = await ref.once("value");
-    
-    return universityRut.val();
-  } catch(error) {
-    throw error;
-  }
-}
-
-async function getUidFirebase(email) {
-  try {
-    const userInfo = await admin.auth().getUserByEmail(email);
-    let uid = userInfo.uid;
-    return uid;
-  } catch (error) {
-    throw error;
-  }
-}
-
-async function createUniversityFirebase(cardId, universityRut,shortName, fullName, email) {
-  console.log("en firebase")
-  try {
-    let userDetails = await admin.auth().createUser({
-      email: email,
-      password: "master",
-      displayName: `${shortName}`
-    });
-    let uid = userDetails.uid;
-    var db = admin.database();
-    //res.send(uuidv1());
-    var refUid = db.ref('universities/uid/' + uid);
-    var refRut = db.ref('universities/rut/' + universityRut);
-    
-    const afterRefUid = await refUid.set({
-      "cardid": cardId,
-      "email": email,
-      "shortName": shortName,
-      "fullName" : fullName,
-      "rut": universityRut
-    });
-    const afterRefRut = await refRut.set({
-      "cardid": cardId,
-      "email": email,
-      "shortName": shortName,
-      "fullName" : fullName,
-      "uid": uid
-    })
-    console.log(afterRefUid);
-    console.log(afterRefRut);
-    console.log(`userDetails: ${userDetails.uid}`);
-    console.log("lo hizo");
-    
-    return true
-  } catch(err) {
-    console.log("tirando error")
-    throw err;
-  }
-}
-
-async function createUserFirebase(email, firstName, lastName, cardId, graduateRut) {
-  console.log("en firebase")
-  try {
-    let userDetails = await admin.auth().createUser({
-      email: email,
-      password: "master",
-      displayName: `${firstName}` + `${lastName}`
-    });
-    let uid = userDetails.uid;
-    var db = admin.database();
-
-    //let ruut = graduateRut;
-    //res.send(uuidv1());
-    var refUid = db.ref('users/uid/' + uid);
-    var refRut = db.ref('users/rut/' + graduateRut);
-
-    console.log(cardId, email, firstName, lastName, graduateRut, uid);
-
-    let kkkk = {
-      "cardid": cardId,
-      "email": email,
-      "firstName": firstName,
-      "lastName" : lastName,
-      "rut": graduateRut
-    };
-    console.log(kkkk);
-    console.log("antes de primer ref")
-    const afterRefUid = await refUid.set({
-      "cardid": cardId,
-      "email": email,
-      "firstName": firstName,
-      "lastName" : lastName,
-      "rut": graduateRut
-    });
-    console.log("antes de seg ref")
-    const afterRefRut = await refRut.set({
-      "cardid": cardId,
-      "email": email,
-      "firstName": firstName,
-      "lastName" : lastName,
-      "uid": uid
-    });
-    console.log("dp de seg ref")
-    console.log(afterRefUid);
-    console.log(afterRefRut);
-    console.log(`userDetails: ${userDetails.uid}`);
-    console.log("lo hizo");
-    
-    return true
-  } catch(err) {
-    console.log("tirando error")
-    throw err;
-  }
-}
-
-//ESTA FUNCIÓN SIRVE PARA CHEQUEAR TODOS LOS USUARIOS Y NO SOLO LOS GRADUADOS
-async function userExistFirebase(email) {
-  try {
-    let checkUser = await admin.auth().getUserByEmail(email);
-  console.log(`user: ${JSON.stringify(checkUser)}`);
-  return true;
-  } catch(error) {
-    if (error.code === 'auth/user-not-found') {
-      console.log(`errorrr: ${error.code}`);
-      return false
-    } else {
-      console.log("ERROOOOR")
-      throw error
-    }
-    
-  }
-}
-
-async function checkIfUniversityExists(universityRut) {
-  console.log("empieza a ejecutarse función checkIfUniversityExists")
-
-  businessNetworkConnection = new BusinessNetworkConnection();
-    await businessNetworkConnection.connect('admin@degree');
-console.log("se conecta con la tarjeta admin")
-    //get the factory for the business network
-    factory = businessNetworkConnection.getBusinessNetwork().getFactory();
-    //add graduate participant
-    const participantRegistry = await businessNetworkConnection.getParticipantRegistry(namespace + '.University');
-    console.log("se crea participantRegistry")
-    const check = await participantRegistry.exists(universityRut);
-    console.log("se crea variable boolean para ver si usuario existe:");
-    console.log(check);
-    return check;
-}
-
-async function checkIfUserExists(graduateRut) {
-  //adminConnection = new AdminConnection();
-  //businessNetworkName = 'degree';
-  console.log("empieza a ejecutarse función checkIfUserExists")
-
-  businessNetworkConnection = new BusinessNetworkConnection();
-    await businessNetworkConnection.connect('admin@degree');
-console.log("se conecta con la tarjeta admin")
-    //get the factory for the business network
-    factory = businessNetworkConnection.getBusinessNetwork().getFactory();
-    //add graduate participant
-    const participantRegistry = await businessNetworkConnection.getParticipantRegistry(namespace + '.Graduate');
-    console.log("se crea participantRegistry")
-    const check = await participantRegistry.exists(graduateRut);
-    console.log("se crea variable boolean para ver si usuario existe:");
-    console.log(check);
-    return check;
-}
-
+};
 
 /*
  * Import card for an identity
@@ -282,66 +108,7 @@ async function importCardForIdentity(cardName, identity) {
   };
 
   //get connectionProfile from json, create Idcard
-  let connectionProfile =  {
-    "name": "fabric-network",
-    "x-type": "hlfv1",
-    "version": "1.0.0",
-    "peers": {
-        "peer0.org1.example.com": {
-            "url": "grpc://localhost:7051",
-            "eventUrl": "grpc://localhost:7053"
-        }
-    },
-    "certificateAuthorities": {
-        "ca.org1.example.com": {
-            "url": "http://localhost:7054",
-            "caName": "ca.org1.example.com"
-        }
-    },
-    "orderers": {
-        "orderer.example.com": {
-            "url": "grpc://localhost:7050"
-        }
-    },
-    "organizations": {
-        "Org1": {
-            "mspid": "Org1MSP",
-            "peers": [
-                "peer0.org1.example.com"
-            ],
-            "certificateAuthorities": [
-                "ca.org1.example.com"
-            ]
-        }
-    },
-    "channels": {
-        "composerchannel": {
-            "orderers": [
-                "orderer.example.com"
-            ],
-            "peers": {
-                "peer0.org1.example.com": {
-                    "endorsingPeer": true,
-                    "chaincodeQuery": true,
-                    "eventSource": true
-                }
-            }
-        }
-    },
-    "client": {
-        "organization": "Org1",
-        "connection": {
-            "timeout": {
-                "peer": {
-                    "endorser": "300",
-                    "eventHub": "300",
-                    "eventReg": "300"
-                },
-                "orderer": "300"
-            }
-        }
-    }
-};
+  
   const card = new IdCard(metadata, connectionProfile);
 
   //import card
@@ -1191,4 +958,238 @@ updateDegreeData: async function (degreeId, updateData, uid) {
 
 
     //AGREGAR MAS FUNCIONES AQUI!
+}
+
+async function getGraduateCardId(graduateRut) {
+  console.log("engetcardid")
+  try {
+    var db = admin.database();
+    var ref = db.ref(`/users/rut/${graduateRut}/cardid`);
+    await ref.on("value", function(snapshot) {
+      console.log(snapshot.val());
+      let graduateCardId = snapshot.val();
+      console.log(graduateCardId);
+      return graduateCardId;
+    }, function (errorObject) {
+      console.log("The read failed: " + errorObject.code);
+      throw errorObject;
+    });
+  } catch(error) {
+    throw error;
+  }
+}
+
+async function getUniversityCardId(uid) {
+  console.log("en get university card id")
+  try {
+    var db = admin.database();
+    var ref = db.ref(`/universities/uid/${uid}/cardid`);
+    console.log(ref)
+    console.log("antes de tratar")
+    await ref.on("value", function(snapshot) {
+      console.log(snapshot.val());
+      let universityCardId = snapshot.val();
+      console.log(universityCardId);
+      console.log("aqui2")
+      return universityCardId;
+    }, function (errorObject) {
+      console.log("The read failed: " + errorObject.code);
+      throw errorObject;
+    });
+    console.log("aaaa")
+    return universityCardId;
+  } catch(error) {
+    throw error;
+  }
+}
+
+async function getUniversityCardId2(uid) {
+  console.log("en get university card id1")
+  try {
+    var db = admin.database();
+    var ref = db.ref(`/universities/uid/${uid}/cardid`);
+    //console.log(ref)
+    console.log("antes de tratar")
+
+    const cardId = await ref.once("value");
+    console.log(cardId.val());
+    
+    return cardId.val();
+  } catch(error) {
+    throw error;
+  }
+}
+
+async function getUniversityRut(uid) {
+  try {
+    var db = admin.database();
+    var ref = db.ref(`/universities/uid/${uid}/rut`);
+    //console.log(ref)
+    console.log("antes de tratar")
+
+    const universityRut = await ref.once("value");
+    
+    return universityRut.val();
+  } catch(error) {
+    throw error;
+  }
+}
+
+async function getUidFirebase(email) {
+  try {
+    const userInfo = await admin.auth().getUserByEmail(email);
+    let uid = userInfo.uid;
+    return uid;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function createUniversityFirebase(cardId, universityRut,shortName, fullName, email) {
+  console.log("en firebase")
+  try {
+    let userDetails = await admin.auth().createUser({
+      email: email,
+      password: "master",
+      displayName: `${shortName}`
+    });
+    let uid = userDetails.uid;
+    var db = admin.database();
+    //res.send(uuidv1());
+    var refUid = db.ref('universities/uid/' + uid);
+    var refRut = db.ref('universities/rut/' + universityRut);
+    
+    const afterRefUid = await refUid.set({
+      "cardid": cardId,
+      "email": email,
+      "shortName": shortName,
+      "fullName" : fullName,
+      "rut": universityRut
+    });
+    const afterRefRut = await refRut.set({
+      "cardid": cardId,
+      "email": email,
+      "shortName": shortName,
+      "fullName" : fullName,
+      "uid": uid
+    })
+    console.log(afterRefUid);
+    console.log(afterRefRut);
+    console.log(`userDetails: ${userDetails.uid}`);
+    console.log("lo hizo");
+    
+    return true
+  } catch(err) {
+    console.log("tirando error")
+    throw err;
+  }
+}
+
+async function createUserFirebase(email, firstName, lastName, cardId, graduateRut) {
+  console.log("en firebase")
+  try {
+    let userDetails = await admin.auth().createUser({
+      email: email,
+      password: "master",
+      displayName: `${firstName}` + `${lastName}`
+    });
+    let uid = userDetails.uid;
+    var db = admin.database();
+
+    //let ruut = graduateRut;
+    //res.send(uuidv1());
+    var refUid = db.ref('users/uid/' + uid);
+    var refRut = db.ref('users/rut/' + graduateRut);
+
+    console.log(cardId, email, firstName, lastName, graduateRut, uid);
+
+    let kkkk = {
+      "cardid": cardId,
+      "email": email,
+      "firstName": firstName,
+      "lastName" : lastName,
+      "rut": graduateRut
+    };
+    console.log(kkkk);
+    console.log("antes de primer ref")
+    const afterRefUid = await refUid.set({
+      "cardid": cardId,
+      "email": email,
+      "firstName": firstName,
+      "lastName" : lastName,
+      "rut": graduateRut
+    });
+    console.log("antes de seg ref")
+    const afterRefRut = await refRut.set({
+      "cardid": cardId,
+      "email": email,
+      "firstName": firstName,
+      "lastName" : lastName,
+      "uid": uid
+    });
+    console.log("dp de seg ref")
+    console.log(afterRefUid);
+    console.log(afterRefRut);
+    console.log(`userDetails: ${userDetails.uid}`);
+    console.log("lo hizo");
+    
+    return true
+  } catch(err) {
+    console.log("tirando error")
+    throw err;
+  }
+}
+
+//ESTA FUNCIÓN SIRVE PARA CHEQUEAR TODOS LOS USUARIOS Y NO SOLO LOS GRADUADOS
+async function userExistFirebase(email) {
+  try {
+    let checkUser = await admin.auth().getUserByEmail(email);
+  console.log(`user: ${JSON.stringify(checkUser)}`);
+  return true;
+  } catch(error) {
+    if (error.code === 'auth/user-not-found') {
+      console.log(`errorrr: ${error.code}`);
+      return false
+    } else {
+      console.log("ERROOOOR")
+      throw error
+    }
+    
+  }
+}
+
+async function checkIfUniversityExists(universityRut) {
+  console.log("empieza a ejecutarse función checkIfUniversityExists")
+
+  businessNetworkConnection = new BusinessNetworkConnection();
+    await businessNetworkConnection.connect('admin@degree');
+console.log("se conecta con la tarjeta admin")
+    //get the factory for the business network
+    factory = businessNetworkConnection.getBusinessNetwork().getFactory();
+    //add graduate participant
+    const participantRegistry = await businessNetworkConnection.getParticipantRegistry(namespace + '.University');
+    console.log("se crea participantRegistry")
+    const check = await participantRegistry.exists(universityRut);
+    console.log("se crea variable boolean para ver si usuario existe:");
+    console.log(check);
+    return check;
+}
+
+async function checkIfUserExists(graduateRut) {
+  //adminConnection = new AdminConnection();
+  //businessNetworkName = 'degree';
+  console.log("empieza a ejecutarse función checkIfUserExists")
+
+  businessNetworkConnection = new BusinessNetworkConnection();
+    await businessNetworkConnection.connect('admin@degree');
+console.log("se conecta con la tarjeta admin")
+    //get the factory for the business network
+    factory = businessNetworkConnection.getBusinessNetwork().getFactory();
+    //add graduate participant
+    const participantRegistry = await businessNetworkConnection.getParticipantRegistry(namespace + '.Graduate');
+    console.log("se crea participantRegistry")
+    const check = await participantRegistry.exists(graduateRut);
+    console.log("se crea variable boolean para ver si usuario existe:");
+    console.log(check);
+    return check;
 }
